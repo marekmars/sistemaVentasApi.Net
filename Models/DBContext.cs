@@ -22,11 +22,13 @@ public partial class DBContext : DbContext
 
     public virtual DbSet<Producto> Productos { get; set; }
 
+    public virtual DbSet<Usuario> Usuarios { get; set; }
+
     public virtual DbSet<Venta> Ventas { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseMySql("server=localhost;user=root;database=sistema_ventas;sslmode=none", Microsoft.EntityFrameworkCore.ServerVersion.Parse("10.4.32-mariadb"));
+        => optionsBuilder.UseMySql("server=localhost;database=sistema_ventas;user=root", Microsoft.EntityFrameworkCore.ServerVersion.Parse("10.4.32-mariadb"));
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -55,7 +57,6 @@ public partial class DBContext : DbContext
             entity.Property(e => e.Nombre)
                 .HasMaxLength(50)
                 .HasColumnName("nombre");
-            
         });
 
         modelBuilder.Entity<Concepto>(entity =>
@@ -116,6 +117,32 @@ public partial class DBContext : DbContext
             entity.Property(e => e.PrecioUnitario)
                 .HasPrecision(16, 2)
                 .HasColumnName("precioUnitario");
+        });
+
+        modelBuilder.Entity<Usuario>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("usuarios");
+
+            entity.Property(e => e.Id)
+                .HasColumnType("int(11)")
+                .HasColumnName("id");
+            entity.Property(e => e.Apellido)
+                .HasMaxLength(50)
+                .HasColumnName("apellido");
+            entity.Property(e => e.Clave)
+                .HasMaxLength(256)
+                .HasColumnName("clave");
+            entity.Property(e => e.Correo)
+                .HasMaxLength(50)
+                .HasColumnName("correo");
+            entity.Property(e => e.Dni)
+                .HasMaxLength(50)
+                .HasColumnName("dni");
+            entity.Property(e => e.Nombre)
+                .HasMaxLength(50)
+                .HasColumnName("nombre");
         });
 
         modelBuilder.Entity<Venta>(entity =>

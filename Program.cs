@@ -1,6 +1,12 @@
+using System.Text;
 using Microsoft.EntityFrameworkCore;
 // using Web_Service_.Net_Core.Models;
 using Microsoft.Extensions.FileProviders;
+using Web_Service_.Net_Core.Models.Common;
+using Web_Service_.Net_Core.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using Web_Service_.Net_Core.Models;
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 var myCorsPolicy = "_myCorsPolicy";
@@ -13,13 +19,59 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddCors(options=>{
-    options.AddPolicy(name:myCorsPolicy, builder=>{
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: myCorsPolicy, builder =>
+    {
         builder.WithOrigins("*");
         builder.WithHeaders("*");
         builder.WithMethods("*");
     });
 });
+
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IVentaService, VentaService>();
+var appSettingsSection = configuration.GetSection("AppSettings");
+builder.Services.Configure<AppSetting>(appSettingsSection);
+
+//configuracion JWT
+var appSettings = appSettingsSection.Get<AppSetting>();
+var key = Encoding.ASCII.GetBytes(appSettings.Secret);
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme; // Esquema JWT como predeterminado
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme; // Esquema JWT como predeterminado
+}).AddJwtBearer(options => // web api valida con token
+{
+    options.RequireHttpsMetadata = false;
+    options.SaveToken = true;
+    options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+    {
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(key)
+    };
+    options.Events = new JwtBearerEvents
+    {
+        OnMessageReceived = context =>
+        {
+            var accessToken = context.Request.Query["access_token"];
+            var path = context.HttpContext.Request.Path;
+            if (!string.IsNullOrEmpty(accessToken))
+            {
+                context.Token = accessToken;
+            }
+            return Task.CompletedTask;
+        }
+    };
+});
+
+
+//FIN
+
 
 var app = builder.Build();
 
@@ -31,6 +83,9 @@ if (app.Environment.IsDevelopment())
 }
 app.UseCors(myCorsPolicy);
 app.UseHttpsRedirection();
+
+//autentificacion para el jwt
+app.UseAuthentication();
 
 app.UseAuthorization();
 

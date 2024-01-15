@@ -102,3 +102,12 @@ E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core
 E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.Workspaces.resources.dll
 E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.Workspaces.resources.dll
 E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\obj\Debug\net8.0\Web Service .Net Core.sourcelink.json
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\bin\Debug\net8.0\Microsoft.IdentityModel.Abstractions.dll
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\bin\Debug\net8.0\Microsoft.IdentityModel.JsonWebTokens.dll
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\bin\Debug\net8.0\Microsoft.IdentityModel.Logging.dll
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.dll
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll
