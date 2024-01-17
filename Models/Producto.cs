@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
 
 namespace Web_Service_.Net_Core.Models;
 
@@ -13,6 +12,8 @@ public partial class Producto
     public decimal PrecioUnitario { get; set; }
 
     public decimal Costo { get; set; }
- [JsonIgnore]
+
+    public int Stock { get; set; }
+
     public virtual ICollection<Concepto> Conceptos { get; set; } = new List<Concepto>();
 }

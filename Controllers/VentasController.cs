@@ -41,6 +41,25 @@ namespace Web_Service_.Net_Core.Controllers
             return Ok(response);
 
         }
+        [HttpDelete("{Id}")]
+        public IActionResult Delete(long Id)
+        {
+            Response response = new();
+            try
+            {
+                _ventaService.Delete(Id);
+                response.Success = 1;
+                response.Message = "Se elimino correctamente";
+            }
+            catch (Exception ex)
+            {
+                response.Success = 0;
+                response.Message = ex.Message;
+            }
+
+            return Ok(response);
+
+        }
 
 
     }

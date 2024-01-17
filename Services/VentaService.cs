@@ -34,7 +34,7 @@ namespace Web_Service_.Net_Core.Services
                                 IdProducto = item.IdProducto,
                                 Cantidad = item.Cantidad,
                                 PrecioUnitario = item.PrecioUnitario,
-                                Importe = item.Importe
+                                Importe = item.Cantidad * item.PrecioUnitario
                             };
                             db.Conceptos.Add(concepto);
 
@@ -42,14 +42,44 @@ namespace Web_Service_.Net_Core.Services
                         db.SaveChanges();
                         dbTransaction.Commit();
                     }
-                    catch (Exception)
+                    catch (Exception e)
                     {
                         dbTransaction.Rollback();
-                        throw new Exception("No se pudo realizar la venta");
+                        throw new Exception("No se pudo realizar la venta" + e);
                     }
                 }
             }
         }
 
+        public void Delete(long Id)
+        {
+            using (DBContext db = new DBContext())
+            {
+                Venta oVenta = db.Ventas.Find(Id);
+                if (oVenta != null)
+                {
+                    db.Remove(oVenta);
+                    db.SaveChanges();
+                }else{
+                    throw new Exception("No se encontro la venta");
+                }
+
+            }
+        }
+
+        public void Edit(VentaRequest oVentaRequest)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Venta Get(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<VentaRequest> GetAll()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

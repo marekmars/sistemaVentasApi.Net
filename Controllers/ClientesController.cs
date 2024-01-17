@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Web_Service_.Net_Core.Models;
 using Web_Service_.Net_Core.Models.Request;
 using Web_Service_.Net_Core.Models.Response;
+using Web_Service_.Net_Core.Services;
 
 namespace Web_Service_.Net_Core.Controllers
 {
@@ -16,7 +17,11 @@ namespace Web_Service_.Net_Core.Controllers
     [Authorize]
     public class ClientesController : ControllerBase
     {
-
+        private readonly IClienteService _clienteService;
+        public ClientesController(IClienteService clienteService)
+        {
+            _clienteService = clienteService;
+        }
         [HttpGet]
         public IActionResult Get()
         {
@@ -25,10 +30,9 @@ namespace Web_Service_.Net_Core.Controllers
             {
                 using (DBContext db = new DBContext())
                 {
-                    oResponse.Data = db.Clientes.OrderByDescending(d=>d.Id).ToList();
+                    oResponse.Data = db.Clientes.OrderByDescending(d => d.Id).ToList();
                     oResponse.Success = 1;
                 }
-
             }
             catch (Exception ex)
             {
@@ -126,8 +130,8 @@ namespace Web_Service_.Net_Core.Controllers
                     Cliente oCliente = db.Clientes.Find(Id);
                     if (oCliente != null)
                     {
-                        
-                       db.Remove(oCliente);
+
+                        db.Remove(oCliente);
                         db.SaveChanges();
                         oResponse.Success = 1;
                         oResponse.Message = "Se elimino correctamente";
@@ -150,6 +154,34 @@ namespace Web_Service_.Net_Core.Controllers
             }
             return Ok(oResponse);
 
+        }
+        [HttpGet("filter")]
+        public IActionResult Filtrarclientes([FromQuery] string searchTerm, [FromQuery] int limite = 5)
+        {
+   
+            Response response = new();
+            try
+            {
+                var clientesFiltrados = _clienteService.FiltrarClientes(searchTerm, limite);
+                if (clientesFiltrados != null && clientesFiltrados.Any())
+                {
+                    response.Success = 1;
+                    response.Data = clientesFiltrados;
+                }
+                else
+                {
+                    response.Success=0;
+                    response.Message = "No se encontraron clientes filtrados";
+                }
+            }
+            catch (System.Exception)
+            {
+
+                throw;
+            }
+
+
+            return Ok(response);
         }
     }
 

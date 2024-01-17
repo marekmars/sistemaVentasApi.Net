@@ -22,6 +22,8 @@ public partial class DBContext : DbContext
 
     public virtual DbSet<Producto> Productos { get; set; }
 
+    public virtual DbSet<Rol> Rols { get; set; }
+
     public virtual DbSet<Usuario> Usuarios { get; set; }
 
     public virtual DbSet<Venta> Ventas { get; set; }
@@ -117,6 +119,23 @@ public partial class DBContext : DbContext
             entity.Property(e => e.PrecioUnitario)
                 .HasPrecision(16, 2)
                 .HasColumnName("precioUnitario");
+            entity.Property(e => e.Stock)
+                .HasColumnType("int(11)")
+                .HasColumnName("stock");
+        });
+
+        modelBuilder.Entity<Rol>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("rol");
+
+            entity.Property(e => e.Id)
+                .HasColumnType("int(11)")
+                .HasColumnName("id");
+            entity.Property(e => e.Nombre)
+                .HasMaxLength(50)
+                .HasColumnName("nombre");
         });
 
         modelBuilder.Entity<Usuario>(entity =>
@@ -124,6 +143,8 @@ public partial class DBContext : DbContext
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
             entity.ToTable("usuarios");
+
+            entity.HasIndex(e => e.IdRol, "fk_rol");
 
             entity.Property(e => e.Id)
                 .HasColumnType("int(11)")
@@ -140,9 +161,17 @@ public partial class DBContext : DbContext
             entity.Property(e => e.Dni)
                 .HasMaxLength(50)
                 .HasColumnName("dni");
+            entity.Property(e => e.IdRol)
+                .HasColumnType("int(11)")
+                .HasColumnName("idRol");
             entity.Property(e => e.Nombre)
                 .HasMaxLength(50)
                 .HasColumnName("nombre");
+
+            entity.HasOne(d => d.IdRolNavigation).WithMany(p => p.Usuarios)
+                .HasForeignKey(d => d.IdRol)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_rol");
         });
 
         modelBuilder.Entity<Venta>(entity =>

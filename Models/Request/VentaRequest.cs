@@ -1,14 +1,21 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Numerics;
 using System.Threading.Tasks;
 
 namespace Web_Service_.Net_Core.Models.Request
 {
     public class VentaRequest
     {
-        public int IdCliente { get; set; }
-        public decimal Total { get; set; }
+        [Required]
+        [Range(1, Double.MaxValue, ErrorMessage = "IdCliente debe ser mayor a 0")]
+        [ExisteCliente(ErrorMessage = "El cliente no existe")]
+        public long IdCliente { get; set; }
+
+        [Required]
+        [MinLength(1, ErrorMessage = "Debe agregar por lo menos un concepto")]
         public List<ConceptoRequest> Conceptos { get; set; }
 
         public VentaRequest()
@@ -26,4 +33,20 @@ namespace Web_Service_.Net_Core.Models.Request
 
         public long IdProducto { get; set; }
     }
+    #region Validaciones
+    public class ExisteCliente : ValidationAttribute
+    {
+        public override bool IsValid(object value)
+        {
+            long IdCliente = (long)value;
+            using (DBContext db = new())
+            {
+                if (db.Clientes.Find(IdCliente) == null) return false;
+            };
+ 
+            return true;
+        }
+    }
+
+    #endregion
 }

@@ -31,6 +31,8 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IVentaService, VentaService>();
+builder.Services.AddScoped<IProductoService, ProductoService>();
+builder.Services.AddScoped<IClienteService, ClienteService>();
 var appSettingsSection = configuration.GetSection("AppSettings");
 builder.Services.Configure<AppSetting>(appSettingsSection);
 
@@ -72,6 +74,9 @@ builder.Services.AddAuthentication(options =>
 
 //FIN
 
+builder.Services.AddAuthorizationBuilder()
+         .AddPolicy("Empleado", policy => policy.RequireRole("Empleado", "Administrador"))
+         .AddPolicy("Administrador", policy => policy.RequireRole("Administrador"));
 
 var app = builder.Build();
 

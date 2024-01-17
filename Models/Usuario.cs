@@ -7,6 +7,8 @@ public partial class Usuario
 {
     public int Id { get; set; }
 
+    public int IdRol { get; set; }
+
     public string Correo { get; set; } = null!;
 
     public string Clave { get; set; } = null!;
@@ -16,4 +18,6 @@ public partial class Usuario
     public string Apellido { get; set; } = null!;
 
     public string Dni { get; set; } = null!;
+
+    public virtual Rol IdRolNavigation { get; set; } = null!;
 }

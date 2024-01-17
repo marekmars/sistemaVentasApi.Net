@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Web_Service_.Net_Core.Controllers;
 using Web_Service_.Net_Core.Models;
 using Web_Service_.Net_Core.Models.Common;
 using Web_Service_.Net_Core.Models.Request;
@@ -33,9 +34,11 @@ namespace Web_Service_.Net_Core.Services
                 {
                     string encryptPassword = Encrypt.GetSHA256(oModel.Clave);
                     var usuario = db.Usuarios.Where(user => user.Correo == oModel.User && user.Clave == encryptPassword).FirstOrDefault();
-                    if (usuario != null)    
+                    if (usuario != null)
                     {
                         userResponse.Correo = usuario.Correo;
+                        // userResponse.Rol =  getRol(usuario);
+
                         userResponse.Token = GetToken(usuario);
                     }
                     else
@@ -56,14 +59,19 @@ namespace Web_Service_.Net_Core.Services
         private string GetToken(Usuario usuario)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_appSettings.Secret); // Assuming _appSettings.Secret is a string containing your secret key
-
+            var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
+            var rol = "";
+            using (DBContext db = new())
+            {
+                rol = getRol(usuario);
+            };
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
             new Claim(ClaimTypes.NameIdentifier, usuario.Id.ToString()),
               new Claim(ClaimTypes.Email, usuario.Correo),
+              new Claim(ClaimTypes.Role, rol),
                 }),
                 Expires = DateTime.UtcNow.AddDays(30), // Token expiration time
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
@@ -73,6 +81,15 @@ namespace Web_Service_.Net_Core.Services
             return tokenHandler.WriteToken(token);
         }
 
-
+        private string getRol(Usuario usuario)
+        {
+            string rol;
+            using (DBContext db = new())
+            {
+               return rol = db.Rols.Where(x => x.Id == usuario.IdRol).Select(x => x.Nombre).FirstOrDefault();
+            };
+            
+        }
     }
+
 }
