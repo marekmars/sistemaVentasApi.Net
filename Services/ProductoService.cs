@@ -10,6 +10,11 @@ namespace Web_Service_.Net_Core.Services
 {
     public class ProductoService : IProductoService
     {
+        private readonly DBContext _context;
+        public ProductoService(DBContext dBContext)
+        {
+            _context = dBContext;
+        }
         public Producto Get()
         {
             throw new NotImplementedException();
@@ -30,39 +35,37 @@ namespace Web_Service_.Net_Core.Services
             {
                 return new List<Producto>(); // O podrías lanzar una excepción si prefieres
             }
-            using (DBContext db = new())
-            {
-                var productosFiltrados = db.Productos
-                                .Where(p => EF.Functions.Like(p.Nombre, $"%{searchTerm}%"))
-                                .Take(limite)
-                                .ToList();
-                return productosFiltrados;
-            }
+
+            var productosFiltrados = _context.Productos
+                            .Where(p => EF.Functions.Like(p.Nombre, $"%{searchTerm}%"))
+                            .Take(limite)
+                            .ToList();
+            return productosFiltrados;
+
         }
 
         public List<ProductoRequest> GetAll()
         {
-            using (DBContext db = new DBContext())
+
+            List<Producto>? productos = [.. _context.Productos.OrderByDescending(x => x.Id)];
+            List<ProductoRequest> productosRequest = [];
+            if (productos.Count > 0)
             {
-                List<Producto>? productos = [.. db.Productos.OrderByDescending(x => x.Id)];
-                List<ProductoRequest> productosRequest = [];
-                if (productos.Count > 0)
+                foreach (var producto in productos)
                 {
-                    foreach (var producto in productos)
+                    productosRequest.Add(new ProductoRequest()
                     {
-                        productosRequest.Add(new ProductoRequest()
-                        {
-                            Id = producto.Id,
-                            Nombre = producto.Nombre,
-                            PrecioUnitario = producto.PrecioUnitario,
-                            Costo = producto.Costo
-                        });
-                    }
-
-
+                        Id = producto.Id,
+                        Nombre = producto.Nombre,
+                        PrecioUnitario = producto.PrecioUnitario,
+                        Costo = producto.Costo
+                    });
                 }
-                return productosRequest;
+
+
             }
+            return productosRequest;
+
         }
 
         public void Delete(int id)

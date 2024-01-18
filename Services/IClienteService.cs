@@ -4,15 +4,19 @@ using System.Linq;
 using System.Threading.Tasks;
 using Web_Service_.Net_Core.Models;
 using Web_Service_.Net_Core.Models.Request;
+using Web_Service_.Net_Core.Models.Tools;
 
 namespace Web_Service_.Net_Core.Services
 {
     public interface IClienteService
     {
-        public ClientesRequest Get();
-        public List<ClientesRequest> GetAll();
-        public void Edit(ClientesRequest oProductoRequest);
-        public void Add(ClientesRequest oProductoRequest);
+        public Cliente Get(long Id);
+        public IEnumerable<Cliente> GetAll();
+        (IEnumerable<Cliente> Data, int TotalElements) GetAllP(ParametrosPaginado oParametrosPaginado);
+
+        public void Edit(ClientesRequest oClientesRequest);
+        public void Add(ClientesRequest oClientesRequest);
+        public void Delete(long Id);
         public IEnumerable<Cliente> FiltrarClientes(string searchTerm, int limite);
     }
 }

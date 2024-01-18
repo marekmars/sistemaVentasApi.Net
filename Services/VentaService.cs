@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Web_Service_.Net_Core.Models;
 using Web_Service_.Net_Core.Models.Request;
 
@@ -9,62 +11,66 @@ namespace Web_Service_.Net_Core.Services
 {
     public class VentaService : IVentaService
     {
+        public readonly DBContext _context;
+        public VentaService(DBContext dBContext)
+        {
+            _context = dBContext;
+        }
         public void Add(VentaRequest oVentaRequest)
         {
-            using (DBContext db = new())
 
+            using (var dbTransaction = _context.Database.BeginTransaction())
             {
-                using (var dbTransaction = db.Database.BeginTransaction())
+                try
                 {
-                    try
+                    var venta = new Venta
                     {
-                        var venta = new Venta
+                        Total = oVentaRequest.Conceptos.Sum(x => x.Cantidad * x.PrecioUnitario),
+                        Fecha = DateTime.Now,
+                        IdCliente = oVentaRequest.IdCliente
+                    };
+                    _context.Ventas.Add(venta);
+                    _context.SaveChanges();
+                    foreach (var item in oVentaRequest.Conceptos)
+                    {
+                        Concepto concepto = new()
                         {
-                            Total = oVentaRequest.Conceptos.Sum(x => x.Cantidad * x.PrecioUnitario),
-                            Fecha = DateTime.Now,
-                            IdCliente = oVentaRequest.IdCliente
+                            IdVenta = venta.Id,
+                            IdProducto = item.IdProducto,
+                            Cantidad = item.Cantidad,
+                            PrecioUnitario = item.PrecioUnitario,
+                            Importe = item.Cantidad * item.PrecioUnitario
                         };
-                        db.Ventas.Add(venta);
-                        db.SaveChanges();
-                        foreach (var item in oVentaRequest.Conceptos)
-                        {
-                            Concepto concepto = new()
-                            {
-                                IdVenta = venta.Id,
-                                IdProducto = item.IdProducto,
-                                Cantidad = item.Cantidad,
-                                PrecioUnitario = item.PrecioUnitario,
-                                Importe = item.Cantidad * item.PrecioUnitario
-                            };
-                            db.Conceptos.Add(concepto);
+                        _context.Conceptos.Add(concepto);
 
-                        }
-                        db.SaveChanges();
-                        dbTransaction.Commit();
                     }
-                    catch (Exception e)
-                    {
-                        dbTransaction.Rollback();
-                        throw new Exception("No se pudo realizar la venta" + e);
-                    }
+                    _context.SaveChanges();
+                    dbTransaction.Commit();
+                }
+                catch (Exception e)
+                {
+                    dbTransaction.Rollback();
+                    throw new Exception("No se pudo realizar la venta" + e);
                 }
             }
+
         }
 
         public void Delete(long Id)
         {
-            using (DBContext db = new DBContext())
-            {
-                Venta oVenta = db.Ventas.Find(Id);
-                if (oVenta != null)
-                {
-                    db.Remove(oVenta);
-                    db.SaveChanges();
-                }else{
-                    throw new Exception("No se encontro la venta");
-                }
 
+            Venta oVenta = _context.Ventas.Find(Id);
+            if (oVenta != null)
+            {
+                _context.Remove(oVenta);
+                _context.SaveChanges();
             }
+            else
+            {
+                throw new Exception("No se encontro la venta");
+            }
+
+
         }
 
         public void Edit(VentaRequest oVentaRequest)

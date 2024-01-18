@@ -78,9 +78,17 @@ builder.Services.AddAuthorizationBuilder()
          .AddPolicy("Empleado", policy => policy.RequireRole("Empleado", "Administrador"))
          .AddPolicy("Administrador", policy => policy.RequireRole("Administrador"));
 
+builder.Services.AddDbContext<DBContext>(
+    options => options.UseMySql(
+        configuration["AppSettings:ConnectionStrings:MySql"]
+        ,ServerVersion.Parse("10.4.32-mariadb")
+    )
+);
+
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

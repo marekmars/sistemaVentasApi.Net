@@ -8,13 +8,14 @@ using Microsoft.EntityFrameworkCore;
 using Web_Service_.Net_Core.Models;
 using Web_Service_.Net_Core.Models.Request;
 using Web_Service_.Net_Core.Models.Response;
+using Web_Service_.Net_Core.Models.Tools;
 using Web_Service_.Net_Core.Services;
 
 namespace Web_Service_.Net_Core.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize]
+    // [Authorize]
     public class ClientesController : ControllerBase
     {
         private readonly IClienteService _clienteService;
@@ -22,53 +23,82 @@ namespace Web_Service_.Net_Core.Controllers
         {
             _clienteService = clienteService;
         }
+        [HttpGet("{id}")]
+        public IActionResult Get(long id)
+        {
+            Response oResponse = new();
+            try
+            {
+
+                oResponse.Success = 1;
+                oResponse.Data = _clienteService.Get(id);
+
+            }
+            catch (Exception ex)
+            {
+                oResponse.Success = 0;
+                oResponse.Message = $"Ocurrio un error buscando el cliente {ex.Message}";
+                throw;
+            }
+            return Ok(oResponse);
+        }
         [HttpGet]
-        public IActionResult Get()
+        public IActionResult GetAll()
         {
             Response oResponse = new Response();
             try
             {
-                using (DBContext db = new DBContext())
-                {
-                    oResponse.Data = db.Clientes.OrderByDescending(d => d.Id).ToList();
-                    oResponse.Success = 1;
-                }
+
+                oResponse.Success = 1;
+                oResponse.Data = _clienteService.GetAll();
             }
             catch (Exception ex)
             {
-                oResponse.Message = ex.Message;
+                oResponse.Success = 0;
+                oResponse.Message = $"Ocurrio un error buscando los clientes {ex.Message}"; ;
             }
             return Ok(oResponse);
 
         }
+        [HttpGet("GetAllP")]
+public IActionResult GetAllP([FromQuery] ParametrosPaginado oParametrosPaginado)
+{
+    Response oResponse = new Response();
+    try
+    {
+        oResponse.Success = 1;
+        var result = _clienteService.GetAllP(oParametrosPaginado);
+        
+        oResponse.Data = new
+        {
+            Data = result.Data,
+            TotalElements = result.TotalElements
+        };
+    }
+    catch (Exception ex)
+    {
+        oResponse.Success = 0;
+        oResponse.Message = $"Ocurrió un error buscando los clientes {ex.Message}";
+    }
+    return Ok(oResponse);
+}
 
         [HttpPost]
-        public IActionResult Add(ClientesRequest oModel)
+        public IActionResult Add(ClientesRequest oClienteRequest)
         {
 
             Response oResponse = new Response();
             try
             {
 
-                using (DBContext db = new DBContext())
-                {
-                    Cliente oCliente = new Cliente
-                    {
-                        Nombre = oModel.Nombre,
-                        Apellido = oModel.Apellido,
-                        Dni = oModel.Dni,
-                        Correo = oModel.Correo
-                    };
-                    db.Add(oCliente);
-                    db.SaveChanges();
-                    oResponse.Success = 1;
-                    oResponse.Message = "Se agrego correctamente";
-                    oResponse.Data = oCliente;
-                }
-
+                _clienteService.Add(oClienteRequest);
+                oResponse.Success = 1;
+                oResponse.Message = "Se agrego correctamente";
+                oResponse.Data = oClienteRequest;
             }
             catch (Exception ex)
             {
+                oResponse.Success = 0;
                 oResponse.Message = ex.Message;
             }
             return Ok(oResponse);
@@ -76,41 +106,22 @@ namespace Web_Service_.Net_Core.Controllers
         }
 
         [HttpPut]
-        public IActionResult Edit(ClientesRequest oModel)
+        public IActionResult Edit(ClientesRequest oCliente)
         {
 
             Response oResponse = new Response();
             try
             {
-
-                using (DBContext db = new DBContext())
-                {
-                    Cliente oCliente = db.Clientes.Find(oModel.Id);
-                    if (oCliente != null)
-                    {
-                        oCliente.Nombre = oModel.Nombre;
-                        oCliente.Apellido = oModel.Apellido;
-                        oCliente.Dni = oModel.Dni;
-                        oCliente.Correo = oModel.Correo;
-                        db.Entry(oCliente).State = EntityState.Modified;
-                        db.SaveChanges();
-                        oResponse.Success = 1;
-                        oResponse.Message = "Se edito correctamente";
-                        oResponse.Data = oCliente;
-                    }
-                    else
-                    {
-
-                        oResponse.Message = "No se encontro un usuario con esa id";
-                        oResponse.Data = null;
-                    }
-
-
-                }
+                _clienteService.Edit(oCliente);
+                oResponse.Success = 1;
+                oResponse.Message = "Se edito correctamente";
+                oResponse.Data = oCliente;
 
             }
             catch (Exception ex)
             {
+
+                oResponse.Success = 0;
                 oResponse.Message = ex.Message;
             }
             return Ok(oResponse);
@@ -120,36 +131,16 @@ namespace Web_Service_.Net_Core.Controllers
         [HttpDelete("{Id}")]
         public IActionResult Delete(long Id)
         {
-
             Response oResponse = new Response();
             try
             {
-
-                using (DBContext db = new DBContext())
-                {
-                    Cliente oCliente = db.Clientes.Find(Id);
-                    if (oCliente != null)
-                    {
-
-                        db.Remove(oCliente);
-                        db.SaveChanges();
-                        oResponse.Success = 1;
-                        oResponse.Message = "Se elimino correctamente";
-                        oResponse.Data = oCliente;
-                    }
-                    else
-                    {
-
-                        oResponse.Message = "No se encontro un usuario con esa id";
-                        oResponse.Data = null;
-                    }
-
-
-                }
-
+                _clienteService.Delete(Id);
+                oResponse.Success = 1;
+                oResponse.Message = "Se elimino correctamente";
             }
             catch (Exception ex)
             {
+                oResponse.Success = 0;
                 oResponse.Message = ex.Message;
             }
             return Ok(oResponse);
@@ -158,7 +149,7 @@ namespace Web_Service_.Net_Core.Controllers
         [HttpGet("filter")]
         public IActionResult Filtrarclientes([FromQuery] string searchTerm, [FromQuery] int limite = 5)
         {
-   
+
             Response response = new();
             try
             {
@@ -170,7 +161,7 @@ namespace Web_Service_.Net_Core.Controllers
                 }
                 else
                 {
-                    response.Success=0;
+                    response.Success = 0;
                     response.Message = "No se encontraron clientes filtrados";
                 }
             }

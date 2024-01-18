@@ -19,33 +19,34 @@ namespace Web_Service_.Net_Core.Services
 {
     public class UserService : IUserService
     {
-        private readonly AppSetting? _appSettings;
+        private readonly AppSetting _appSettings;
+        private readonly DBContext _context;
 
-        public UserService(IOptions<AppSetting> appSetings)
+        public UserService(IOptions<AppSetting> appSetings, DBContext dBContext)
         {
             _appSettings = appSetings.Value;
+            _context = dBContext;
         }
         public UserResponse Auth(AuthRequest oModel)
         {
             UserResponse userResponse = new();
             try
             {
-                using (var db = new DBContext())
-                {
-                    string encryptPassword = Encrypt.GetSHA256(oModel.Clave);
-                    var usuario = db.Usuarios.Where(user => user.Correo == oModel.User && user.Clave == encryptPassword).FirstOrDefault();
-                    if (usuario != null)
-                    {
-                        userResponse.Correo = usuario.Correo;
-                        // userResponse.Rol =  getRol(usuario);
 
-                        userResponse.Token = GetToken(usuario);
-                    }
-                    else
-                    {
-                        userResponse = null;
-                    }
+                string encryptPassword = Encrypt.GetSHA256(oModel.Clave);
+                var usuario = _context.Usuarios.Where(user => user.Correo == oModel.User && user.Clave == encryptPassword).FirstOrDefault();
+                if (usuario != null)
+                {
+                    userResponse.Correo = usuario.Correo;
+                    // userResponse.Rol =  getRol(usuario);
+
+                    userResponse.Token = GetToken(usuario);
                 }
+                else
+                {
+                    userResponse = null;
+                }
+
             }
             catch (System.Exception)
             {
@@ -60,18 +61,15 @@ namespace Web_Service_.Net_Core.Services
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
-            var rol = "";
-            using (DBContext db = new())
-            {
-                rol = getRol(usuario);
-            };
+            string? rol = "";
+
+            rol = getRol(usuario);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new Claim[]
-                {
-            new Claim(ClaimTypes.NameIdentifier, usuario.Id.ToString()),
-              new Claim(ClaimTypes.Email, usuario.Correo),
-              new Claim(ClaimTypes.Role, rol),
+                Subject = new ClaimsIdentity(new Claim[]{
+                 new(ClaimTypes.NameIdentifier, usuario.Id.ToString()),
+                 new(ClaimTypes.Email, usuario.Correo),
+                 new(ClaimTypes.Role, rol),
                 }),
                 Expires = DateTime.UtcNow.AddDays(30), // Token expiration time
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
@@ -81,14 +79,11 @@ namespace Web_Service_.Net_Core.Services
             return tokenHandler.WriteToken(token);
         }
 
-        private string getRol(Usuario usuario)
+        private string? getRol(Usuario usuario)
         {
-            string rol;
-            using (DBContext db = new())
-            {
-               return rol = db.Rols.Where(x => x.Id == usuario.IdRol).Select(x => x.Nombre).FirstOrDefault();
-            };
-            
+            string? rol;
+            return rol = _context.Rols.Where(x => x.Id == usuario.IdRol).Select(x => x.Nombre).FirstOrDefault();
+
         }
     }
 
