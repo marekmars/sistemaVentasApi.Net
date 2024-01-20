@@ -9,6 +9,8 @@ namespace Web_Service_.Net_Core.Models.Request
 {
     public class VentaRequest
     {
+        [Key] 
+        public long Id { get; set; }
         [Required]
         [Range(1, Double.MaxValue, ErrorMessage = "IdCliente debe ser mayor a 0")]
         [ExisteCliente(ErrorMessage = "El cliente no existe")]
@@ -43,7 +45,7 @@ namespace Web_Service_.Net_Core.Models.Request
             {
                 if (db.Clientes.Find(IdCliente) == null) return false;
             };
- 
+
             return true;
         }
     }

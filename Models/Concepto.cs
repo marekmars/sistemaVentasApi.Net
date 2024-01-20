@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Web_Service_.Net_Core.Models;
 
@@ -17,7 +18,10 @@ public partial class Concepto
 
     public long IdProducto { get; set; }
 
-    public virtual Producto IdProductoNavigation { get; set; } = null!;
+    [ForeignKey("IdProducto")]
+    public Producto? Producto { get; set; }
 
-    public virtual Venta IdVentaNavigation { get; set; } = null!;
+    // public virtual Producto IdProductoNavigation { get; set; } = null!;
+
+    // public virtual Venta IdVentaNavigation { get; set; } = null!;
 }

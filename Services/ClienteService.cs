@@ -130,23 +130,23 @@ namespace Web_Service_.Net_Core.Services
         }
 
         public (IEnumerable<Cliente> Data, int TotalElements) GetAllP(ParametrosPaginado oParametrosPaginado)
-    {
-        List<Cliente> oClientes = new();
-
-        var totalElements = _context.Clientes.Count(); // Obtener el total de elementos
-
-        oClientes = _context.Clientes.OrderByDescending(d => d.Id)
-            .Skip((oParametrosPaginado.PageIndex) * oParametrosPaginado.ItemsPerPage)
-            .Take(oParametrosPaginado.ItemsPerPage).ToList();
-
-        if (oClientes.Count != 0)
         {
-            return (oClientes, totalElements);
+            List<Cliente> oClientes = new();
+
+            var totalElements = _context.Clientes.Count(); // Obtener el total de elementos
+
+            oClientes = _context.Clientes.OrderByDescending(d => d.Id)
+                .Skip((oParametrosPaginado.PageIndex) * oParametrosPaginado.ItemsPerPage)
+                .Take(oParametrosPaginado.ItemsPerPage).ToList();
+
+            if (oClientes.Count != 0)
+            {
+                return (oClientes, totalElements);
+            }
+            else
+            {
+                throw new Exception("No se encontraron clientes");
+            }
         }
-        else
-        {
-            throw new Exception("No se encontraron clientes");
-        }
-    }
     }
 }

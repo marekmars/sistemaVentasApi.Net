@@ -12,7 +12,7 @@ namespace Web_Service_.Net_Core.Services
     {
         public Cliente Get(long Id);
         public IEnumerable<Cliente> GetAll();
-        (IEnumerable<Cliente> Data, int TotalElements) GetAllP(ParametrosPaginado oParametrosPaginado);
+        public (IEnumerable<Cliente> Data, int TotalElements) GetAllP(ParametrosPaginado oParametrosPaginado);
 
         public void Edit(ClientesRequest oClientesRequest);
         public void Add(ClientesRequest oClientesRequest);

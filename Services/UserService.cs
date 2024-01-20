@@ -38,7 +38,7 @@ namespace Web_Service_.Net_Core.Services
                 if (usuario != null)
                 {
                     userResponse.Correo = usuario.Correo;
-                    // userResponse.Rol =  getRol(usuario);
+                    userResponse.Rol =  getRol(usuario);
 
                     userResponse.Token = GetToken(usuario);
                 }
@@ -62,7 +62,7 @@ namespace Web_Service_.Net_Core.Services
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
             string? rol = "";
-
+            
             rol = getRol(usuario);
             var tokenDescriptor = new SecurityTokenDescriptor
             {

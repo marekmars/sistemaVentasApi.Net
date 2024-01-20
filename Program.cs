@@ -7,6 +7,9 @@ using Web_Service_.Net_Core.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Web_Service_.Net_Core.Models;
+
+
+
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 var myCorsPolicy = "_myCorsPolicy";
@@ -33,6 +36,8 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IVentaService, VentaService>();
 builder.Services.AddScoped<IProductoService, ProductoService>();
 builder.Services.AddScoped<IClienteService, ClienteService>();
+builder.Services.AddScoped<IConceptoService, ConceptoService>();
+
 var appSettingsSection = configuration.GetSection("AppSettings");
 builder.Services.Configure<AppSetting>(appSettingsSection);
 
@@ -74,6 +79,8 @@ builder.Services.AddAuthentication(options =>
 
 //FIN
 
+
+
 builder.Services.AddAuthorizationBuilder()
          .AddPolicy("Empleado", policy => policy.RequireRole("Empleado", "Administrador"))
          .AddPolicy("Administrador", policy => policy.RequireRole("Administrador"));
@@ -81,7 +88,7 @@ builder.Services.AddAuthorizationBuilder()
 builder.Services.AddDbContext<DBContext>(
     options => options.UseMySql(
         configuration["AppSettings:ConnectionStrings:MySql"]
-        ,ServerVersion.Parse("10.4.32-mariadb")
+        , Microsoft.EntityFrameworkCore.ServerVersion.Parse("10.4.32-mariadb")
     )
 );
 

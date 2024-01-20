@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Web_Service_.Net_Core.Models;
 
 public partial class Cliente
 {
+    
     public long Id { get; set; }
 
     public string Nombre { get; set; } = null!;
@@ -15,5 +17,5 @@ public partial class Cliente
 
     public string Correo { get; set; } = null!;
 
-    public virtual ICollection<Venta> Venta { get; set; } = new List<Venta>();
+    // public virtual ICollection<Venta> Venta { get; set; } = new List<Venta>();
 }

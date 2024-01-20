@@ -37,7 +37,7 @@ namespace Web_Service_.Net_Core.Services
             }
 
             var productosFiltrados = _context.Productos
-                            .Where(p => EF.Functions.Like(p.Nombre, $"%{searchTerm}%"))
+                            .Where(p => EF.Functions.Like(p.Nombre, $"%{searchTerm}%")&&p.Stock>0)
                             .Take(limite)
                             .ToList();
             return productosFiltrados;

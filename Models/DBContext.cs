@@ -89,15 +89,7 @@ public partial class DBContext : DbContext
                 .HasPrecision(16, 2)
                 .HasColumnName("precioUnitario");
 
-            entity.HasOne(d => d.IdProductoNavigation).WithMany(p => p.Conceptos)
-                .HasForeignKey(d => d.IdProducto)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_producto_concepto");
-
-            entity.HasOne(d => d.IdVentaNavigation).WithMany(p => p.Conceptos)
-                .HasForeignKey(d => d.IdVenta)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_venta_concepto");
+           
         });
 
         modelBuilder.Entity<Producto>(entity =>
@@ -167,10 +159,7 @@ public partial class DBContext : DbContext
                 .HasMaxLength(50)
                 .HasColumnName("nombre");
 
-            entity.HasOne(d => d.IdRolNavigation).WithMany(p => p.Usuarios)
-                .HasForeignKey(d => d.IdRol)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_rol");
+         
         });
 
         modelBuilder.Entity<Venta>(entity =>
@@ -194,10 +183,6 @@ public partial class DBContext : DbContext
                 .HasPrecision(16, 2)
                 .HasColumnName("total");
 
-            entity.HasOne(d => d.IdClienteNavigation).WithMany(p => p.Venta)
-                .HasForeignKey(d => d.IdCliente)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_venta_cliente");
         });
 
         OnModelCreatingPartial(modelBuilder);

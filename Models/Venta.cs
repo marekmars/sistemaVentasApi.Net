@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Web_Service_.Net_Core.Models;
 
@@ -9,11 +10,14 @@ public partial class Venta
 
     public long IdCliente { get; set; }
 
+     [ForeignKey(nameof(IdCliente))]
+    public Cliente? Cliente { get; set; }
     public DateTime Fecha { get; set; }
 
     public decimal? Total { get; set; }
 
-    public virtual ICollection<Concepto> Conceptos { get; set; } = new List<Concepto>();
+    // public virtual ICollection<Concepto> Conceptos { get; set; } = new List<Concepto>();
 
-    public virtual Cliente IdClienteNavigation { get; set; } = null!;
+
+    // public Cliente IdClienteNavigation { get; set; } = null!;
 }

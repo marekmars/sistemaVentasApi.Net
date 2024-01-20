@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Web_Service_.Net_Core.Models;
 using Web_Service_.Net_Core.Models.Request;
 using Web_Service_.Net_Core.Models.Response;
+using Web_Service_.Net_Core.Models.Tools;
 using Web_Service_.Net_Core.Services;
 namespace Web_Service_.Net_Core.Controllers
 {
@@ -26,7 +27,7 @@ namespace Web_Service_.Net_Core.Controllers
             Response response = new();
             try
             {
-               
+
                 _ventaService.Add(oVentaRequest);
                 response.Success = 1;
                 response.Message = "Se agrego correctamente";
@@ -59,6 +60,47 @@ namespace Web_Service_.Net_Core.Controllers
 
             return Ok(response);
 
+        }
+
+        [HttpGet("GetAllP")]
+        public IActionResult GetAllP([FromQuery] ParametrosPaginado oParametrosPaginado)
+        {
+            Response oResponse = new Response();
+            try
+            {
+                oResponse.Success = 1;
+                var result = _ventaService.GetAllP(oParametrosPaginado);
+
+                oResponse.Data = new
+                {
+                    Data = result.Data,
+                    TotalElements = result.TotalElements
+                };
+            }
+            catch (Exception ex)
+            {
+                oResponse.Success = 0;
+                oResponse.Message = $"Ocurrió un error buscando las ventas {ex.Message}";
+            }
+            return Ok(oResponse);
+        }
+
+        [HttpGet("{Id}")]
+        public IActionResult Get(int Id)
+        {
+            Response response = new();
+            try
+            {
+                response.Data = _ventaService.Get(Id); ;
+                response.Success = 1;
+            }
+            catch (Exception ex)
+            {
+                response.Success = 0;
+                response.Message = ex.Message;
+            }
+
+            return Ok(response);
         }
 
 

@@ -48,7 +48,6 @@ namespace Web_Service_.Net_Core.Controllers
             Response oResponse = new Response();
             try
             {
-
                 oResponse.Success = 1;
                 oResponse.Data = _clienteService.GetAll();
             }
@@ -61,27 +60,27 @@ namespace Web_Service_.Net_Core.Controllers
 
         }
         [HttpGet("GetAllP")]
-public IActionResult GetAllP([FromQuery] ParametrosPaginado oParametrosPaginado)
-{
-    Response oResponse = new Response();
-    try
-    {
-        oResponse.Success = 1;
-        var result = _clienteService.GetAllP(oParametrosPaginado);
-        
-        oResponse.Data = new
+        public IActionResult GetAllP([FromQuery] ParametrosPaginado oParametrosPaginado)
         {
-            Data = result.Data,
-            TotalElements = result.TotalElements
-        };
-    }
-    catch (Exception ex)
-    {
-        oResponse.Success = 0;
-        oResponse.Message = $"Ocurrió un error buscando los clientes {ex.Message}";
-    }
-    return Ok(oResponse);
-}
+            Response oResponse = new Response();
+            try
+            {
+                oResponse.Success = 1;
+                var result = _clienteService.GetAllP(oParametrosPaginado);
+
+                oResponse.Data = new
+                {
+                    Data = result.Data,
+                    TotalElements = result.TotalElements
+                };
+            }
+            catch (Exception ex)
+            {
+                oResponse.Success = 0;
+                oResponse.Message = $"Ocurrió un error buscando los clientes {ex.Message}";
+            }
+            return Ok(oResponse);
+        }
 
         [HttpPost]
         public IActionResult Add(ClientesRequest oClienteRequest)
@@ -129,6 +128,7 @@ public IActionResult GetAllP([FromQuery] ParametrosPaginado oParametrosPaginado)
         }
 
         [HttpDelete("{Id}")]
+        [Authorize(Roles = "Administrador")]
         public IActionResult Delete(long Id)
         {
             Response oResponse = new Response();
@@ -154,21 +154,15 @@ public IActionResult GetAllP([FromQuery] ParametrosPaginado oParametrosPaginado)
             try
             {
                 var clientesFiltrados = _clienteService.FiltrarClientes(searchTerm, limite);
-                if (clientesFiltrados != null && clientesFiltrados.Any())
-                {
-                    response.Success = 1;
-                    response.Data = clientesFiltrados;
-                }
-                else
-                {
-                    response.Success = 0;
-                    response.Message = "No se encontraron clientes filtrados";
-                }
+                response.Success = 1;
+                response.Data = clientesFiltrados;
+
             }
             catch (System.Exception)
             {
+                response.Success = 0;
+                response.Message = "No se encontraron clientes filtrados";
 
-                throw;
             }
 
 

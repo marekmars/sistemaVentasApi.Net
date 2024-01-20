@@ -5,32 +5,8 @@ E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core
 E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\bin\Debug\net8.0\Web Service .Net Core.runtimeconfig.json
 E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\bin\Debug\net8.0\Web Service .Net Core.dll
 E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\bin\Debug\net8.0\Web Service .Net Core.pdb
-E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\bin\Debug\net8.0\Microsoft.OpenApi.dll
-E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\bin\Debug\net8.0\Swashbuckle.AspNetCore.Swagger.dll
-E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerGen.dll
-E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerUI.dll
-E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\obj\Debug\net8.0\Web Service .Net Core.csproj.AssemblyReference.cache
-E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\obj\Debug\net8.0\Web Service .Net Core.GeneratedMSBuildEditorConfig.editorconfig
-E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\obj\Debug\net8.0\Web Service .Net Core.AssemblyInfoInputs.cache
-E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\obj\Debug\net8.0\Web Service .Net Core.AssemblyInfo.cs
-E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\obj\Debug\net8.0\Web Service .Net Core.csproj.CoreCompileInputs.cache
-E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\obj\Debug\net8.0\Web Service .Net Core.MvcApplicationPartsAssemblyInfo.cs
-E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\obj\Debug\net8.0\Web Service .Net Core.MvcApplicationPartsAssemblyInfo.cache
-E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\obj\Debug\net8.0\staticwebassets.build.json
-E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\obj\Debug\net8.0\staticwebassets.development.json
-E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\obj\Debug\net8.0\staticwebassets\msbuild.Web Service .Net Core.Microsoft.AspNetCore.StaticWebAssets.props
-E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\obj\Debug\net8.0\staticwebassets\msbuild.build.Web Service .Net Core.props
-E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\obj\Debug\net8.0\staticwebassets\msbuild.buildMultiTargeting.Web Service .Net Core.props
-E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\obj\Debug\net8.0\staticwebassets\msbuild.buildTransitive.Web Service .Net Core.props
-E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\obj\Debug\net8.0\staticwebassets.pack.json
-E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\obj\Debug\net8.0\scopedcss\bundle\Web Service .Net Core.styles.css
-E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\obj\Debug\net8.0\Web Service .Net Core.csproj.CopyComplete
-E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\obj\Debug\net8.0\Web Service .Net Core.dll
-E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\obj\Debug\net8.0\refint\Web Service .Net Core.dll
-E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\obj\Debug\net8.0\Web Service .Net Core.pdb
-E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\obj\Debug\net8.0\Web Service .Net Core.genruntimeconfig.cache
-E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\obj\Debug\net8.0\ref\Web Service .Net Core.dll
 E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\bin\Debug\net8.0\Humanizer.dll
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
 E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\bin\Debug\net8.0\Microsoft.Bcl.AsyncInterfaces.dll
 E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\bin\Debug\net8.0\Microsoft.CodeAnalysis.dll
 E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\bin\Debug\net8.0\Microsoft.CodeAnalysis.CSharp.dll
@@ -41,15 +17,26 @@ E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core
 E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Design.dll
 E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Relational.dll
 E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\bin\Debug\net8.0\Microsoft.Extensions.DependencyModel.dll
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\bin\Debug\net8.0\Microsoft.IdentityModel.Abstractions.dll
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\bin\Debug\net8.0\Microsoft.IdentityModel.JsonWebTokens.dll
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\bin\Debug\net8.0\Microsoft.IdentityModel.Logging.dll
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.dll
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\bin\Debug\net8.0\Microsoft.OpenApi.dll
 E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\bin\Debug\net8.0\Mono.TextTemplating.dll
 E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\bin\Debug\net8.0\MySqlConnector.dll
 E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\bin\Debug\net8.0\Pomelo.EntityFrameworkCore.MySql.dll
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\bin\Debug\net8.0\Swashbuckle.AspNetCore.Swagger.dll
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerUI.dll
 E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\bin\Debug\net8.0\System.CodeDom.dll
 E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\bin\Debug\net8.0\System.Composition.AttributedModel.dll
 E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\bin\Debug\net8.0\System.Composition.Convention.dll
 E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\bin\Debug\net8.0\System.Composition.Hosting.dll
 E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\bin\Debug\net8.0\System.Composition.Runtime.dll
 E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\bin\Debug\net8.0\System.Composition.TypedParts.dll
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll
 E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.resources.dll
 E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.resources.dll
 E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.resources.dll
@@ -102,12 +89,25 @@ E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core
 E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.Workspaces.resources.dll
 E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.Workspaces.resources.dll
 E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\obj\Debug\net8.0\Web Service .Net Core.csproj.AssemblyReference.cache
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\obj\Debug\net8.0\Web Service .Net Core.GeneratedMSBuildEditorConfig.editorconfig
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\obj\Debug\net8.0\Web Service .Net Core.AssemblyInfoInputs.cache
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\obj\Debug\net8.0\Web Service .Net Core.AssemblyInfo.cs
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\obj\Debug\net8.0\Web Service .Net Core.csproj.CoreCompileInputs.cache
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\obj\Debug\net8.0\Web Service .Net Core.MvcApplicationPartsAssemblyInfo.cs
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\obj\Debug\net8.0\Web Service .Net Core.MvcApplicationPartsAssemblyInfo.cache
 E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\obj\Debug\net8.0\Web Service .Net Core.sourcelink.json
-E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
-E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\bin\Debug\net8.0\Microsoft.IdentityModel.Abstractions.dll
-E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\bin\Debug\net8.0\Microsoft.IdentityModel.JsonWebTokens.dll
-E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\bin\Debug\net8.0\Microsoft.IdentityModel.Logging.dll
-E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.dll
-E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
-E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
-E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\obj\Debug\net8.0\staticwebassets.build.json
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\obj\Debug\net8.0\staticwebassets.development.json
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\obj\Debug\net8.0\staticwebassets\msbuild.Web Service .Net Core.Microsoft.AspNetCore.StaticWebAssets.props
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\obj\Debug\net8.0\staticwebassets\msbuild.build.Web Service .Net Core.props
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\obj\Debug\net8.0\staticwebassets\msbuild.buildMultiTargeting.Web Service .Net Core.props
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\obj\Debug\net8.0\staticwebassets\msbuild.buildTransitive.Web Service .Net Core.props
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\obj\Debug\net8.0\staticwebassets.pack.json
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\obj\Debug\net8.0\scopedcss\bundle\Web Service .Net Core.styles.css
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\obj\Debug\net8.0\Web Service .Net Core.csproj.CopyComplete
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\obj\Debug\net8.0\Web Service .Net Core.dll
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\obj\Debug\net8.0\refint\Web Service .Net Core.dll
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\obj\Debug\net8.0\Web Service .Net Core.pdb
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\obj\Debug\net8.0\Web Service .Net Core.genruntimeconfig.cache
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\obj\Debug\net8.0\ref\Web Service .Net Core.dll
