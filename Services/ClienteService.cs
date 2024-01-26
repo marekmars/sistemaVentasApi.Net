@@ -88,10 +88,6 @@ namespace Web_Service_.Net_Core.Services
             {
                 throw new Exception("Cliente no encontrado");
             }
-
-
-
-
         }
 
         public Cliente Get(long id)

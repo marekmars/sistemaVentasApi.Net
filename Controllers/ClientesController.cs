@@ -48,8 +48,9 @@ namespace Web_Service_.Net_Core.Controllers
             Response oResponse = new Response();
             try
             {
-                oResponse.Success = 1;
+                
                 oResponse.Data = _clienteService.GetAll();
+                oResponse.Success = 1;
             }
             catch (Exception ex)
             {

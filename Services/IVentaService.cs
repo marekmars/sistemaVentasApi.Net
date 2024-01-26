@@ -16,7 +16,8 @@ namespace Web_Service_.Net_Core.Services
         public Venta Get(int id);
         public void Edit(VentaRequest oVentaRequest);
         public void Delete(long id);
-
+        public IEnumerable<Venta> FiltrarVentas(string searchTerm, int limite);
+        public IEnumerable<Venta> FiltrarVentasFecha(string date,int limite);
 
 
     }

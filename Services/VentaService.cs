@@ -18,7 +18,7 @@ namespace Web_Service_.Net_Core.Services
         {
             _context = dBContext;
         }
-        public  void Add(VentaRequest oVentaRequest)
+        public void Add(VentaRequest oVentaRequest)
         {
 
             using (var dbTransaction = _context.Database.BeginTransaction())
@@ -83,7 +83,7 @@ namespace Web_Service_.Net_Core.Services
         public Venta Get(int id)
         {
             Venta? oVenta = _context.Ventas.Find(id);
-                    
+
             if (oVenta != null)
             {
                 return oVenta;
@@ -110,7 +110,7 @@ namespace Web_Service_.Net_Core.Services
                      .Skip(oParametrosPaginado.PageIndex * oParametrosPaginado.ItemsPerPage)
                      .Take(oParametrosPaginado.ItemsPerPage)
                      .ToList();
-                 
+
             if (oVentas.Count != 0)
             {
                 return (oVentas, totalElements);
@@ -118,6 +118,57 @@ namespace Web_Service_.Net_Core.Services
             else
             {
                 throw new Exception("No se encontraron ventas");
+            }
+        }
+
+        public IEnumerable<Venta> FiltrarVentas(string searchTerm, int limite)
+        {
+            if (string.IsNullOrEmpty(searchTerm))
+            {
+                throw new Exception("La búsqueda no puede ser vacía");
+            }
+
+            List<Venta> oVentas = _context.Ventas.Include(v => v.Cliente)
+                .Where(p => EF.Functions.Like(p.Cliente.Nombre, $"%{searchTerm}%") ||
+                            EF.Functions.Like(p.Id.ToString(), $"%{searchTerm}%") ||
+                            EF.Functions.Like(p.Cliente.Apellido, $"%{searchTerm}%"))
+                .Take(limite)
+                .ToList();
+
+            if (oVentas.Count != 0)
+            {
+                return oVentas;
+            }
+            else
+            {
+                throw new Exception("Venta no encontrada");
+            }
+        }
+
+        public IEnumerable<Venta> FiltrarVentasFecha(string date, int limite)
+        {
+
+            if (!DateTime.TryParseExact(date, "yyyy-MM-dd", null, System.Globalization.DateTimeStyles.None, out DateTime fechaParseada))
+            {
+                throw new Exception("La búsqueda no puede ser vacía");
+            }
+            Console.WriteLine(date);
+
+            DateTime.TryParseExact(date, "yyyy-MM-dd", null, System.Globalization.DateTimeStyles.None, out DateTime dateParsed);
+            Console.WriteLine(dateParsed);
+            List<Venta> oVentas = _context.Ventas.Include(v=>v.Cliente)
+                .Where(p => p.Fecha.Date == fechaParseada.Date)
+
+                .Take(limite)
+                .ToList();
+
+            if (oVentas.Count != 0)
+            {
+                return oVentas;
+            }
+            else
+            {
+                throw new Exception("Venta no encontrada");
             }
         }
     }

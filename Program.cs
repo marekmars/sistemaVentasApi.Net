@@ -32,11 +32,12 @@ builder.Services.AddCors(options =>
     });
 });
 
-builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddScoped<IVentaService, VentaService>();
 builder.Services.AddScoped<IProductoService, ProductoService>();
 builder.Services.AddScoped<IClienteService, ClienteService>();
 builder.Services.AddScoped<IConceptoService, ConceptoService>();
+builder.Services.AddScoped<IRolService, RolService>();
 
 var appSettingsSection = configuration.GetSection("AppSettings");
 builder.Services.Configure<AppSetting>(appSettingsSection);

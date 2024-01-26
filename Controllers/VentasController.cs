@@ -42,6 +42,7 @@ namespace Web_Service_.Net_Core.Controllers
             return Ok(response);
 
         }
+        [Authorize(Roles = "Administrador")]
         [HttpDelete("{Id}")]
         public IActionResult Delete(long Id)
         {
@@ -102,7 +103,46 @@ namespace Web_Service_.Net_Core.Controllers
 
             return Ok(response);
         }
+        [HttpGet("filter")]
+        public IActionResult FiltrarVentas([FromQuery] string searchTerm, [FromQuery] int limite = 5)
+        {
 
+            Response response = new();
+            try
+            {
+                var ventasFiltradas = _ventaService.FiltrarVentas(searchTerm, limite);
+                response.Success = 1;
+                response.Data = ventasFiltradas;
+
+            }
+            catch (System.Exception)
+            {
+                response.Success = 0;
+                response.Message = "No se encontraron ventas filtradas";
+
+            }
+            return Ok(response);
+        }
+          [HttpGet("filterDate")]
+        public IActionResult FiltrarVentasDate([FromQuery] string fecha, [FromQuery] int limite = 5)
+        {
+
+            Response response = new();
+            try
+            {
+                var ventasFiltradas = _ventaService.FiltrarVentasFecha(fecha, limite);
+                response.Success = 1;
+                response.Data = ventasFiltradas;
+
+            }
+            catch (System.Exception)
+            {
+                response.Success = 0;
+                response.Message = "No se encontraron ventas filtradas";
+
+            }
+            return Ok(response);
+        }
 
     }
 }
