@@ -114,26 +114,37 @@ namespace Web_Service_.Net_Core.Services
             }
         }
 
-        public (IEnumerable<Producto> Data, int TotalElements) GetAllP(ParametrosPaginado oParametrosPaginado)
+        // public (IEnumerable<Producto> Data, int TotalElements) GetAllP(QueryParameters oParametrosPaginado)
+        // {
+        //     List<Producto> oProductos = new();
+
+        //     var totalElements = _context.Productos.Count(); // Obtener el total de elementos
+
+        //     oProductos = _context.Productos
+        //              .OrderBy(d => d.Id)
+        //              .Skip(oParametrosPaginado.Skip * oParametrosPaginado.Limit)
+        //              .Take(oParametrosPaginado.Limit)
+        //              .ToList();
+
+        //     if (oProductos.Count != 0)
+        //     {
+        //         return (oProductos, totalElements);
+        //     }
+        //     else
+        //     {
+        //         throw new Exception("No se encontraron productos");
+        //     }
+        //     throw new Exception("No Implmentado");
+        // }
+
+        public Producto Get(long id)
         {
-            List<Producto> oProductos = new();
+            throw new NotImplementedException();
+        }
 
-            var totalElements = _context.Productos.Count(); // Obtener el total de elementos
-
-            oProductos = _context.Productos
-                     .OrderBy(d => d.Id)
-                     .Skip(oParametrosPaginado.PageIndex * oParametrosPaginado.ItemsPerPage)
-                     .Take(oParametrosPaginado.ItemsPerPage)
-                     .ToList();
-
-            if (oProductos.Count != 0)
-            {
-                return (oProductos, totalElements);
-            }
-            else
-            {
-                throw new Exception("No se encontraron productos");
-            }
+        List<Producto> IProductoService.Get()
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -7,7 +7,7 @@ namespace Web_Service_.Net_Core.Models.Common
 {
     public class AppSetting
     {
-        public string? Secret { get; set; }
+        public string Secret { get; set; }="";
        
     }
 }

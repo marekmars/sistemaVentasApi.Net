@@ -98,28 +98,28 @@ namespace Web_Service_.Net_Core.Services
             throw new NotImplementedException();
         }
 
-        public (IEnumerable<Venta> Data, int TotalElements) GetAllP(ParametrosPaginado oParametrosPaginado)
-        {
-            List<Venta> oVentas = new();
+        // public (IEnumerable<Venta> Data, int TotalElements) GetAllP(ProductQueryParameters oParametrosPaginado)
+        // {
+        //     List<Venta> oVentas = new();
 
-            var totalElements = _context.Ventas.Count(); // Obtener el total de elementos
+        //     var totalElements = _context.Ventas.Count(); // Obtener el total de elementos
 
-            oVentas = _context.Ventas
-                     .OrderByDescending(d => d.Id)
-                     .Include(v => v.Cliente) // Assuming Cliente is the navigation property in Venta
-                     .Skip(oParametrosPaginado.PageIndex * oParametrosPaginado.ItemsPerPage)
-                     .Take(oParametrosPaginado.ItemsPerPage)
-                     .ToList();
+        //     oVentas = _context.Ventas
+        //              .OrderByDescending(d => d.Id)
+        //              .Include(v => v.Cliente) // Assuming Cliente is the navigation property in Venta
+        //              .Skip(oParametrosPaginado.PageIndex * oParametrosPaginado.ItemsPerPage)
+        //              .Take(oParametrosPaginado.ItemsPerPage)
+        //              .ToList();
 
-            if (oVentas.Count != 0)
-            {
-                return (oVentas, totalElements);
-            }
-            else
-            {
-                throw new Exception("No se encontraron ventas");
-            }
-        }
+        //     if (oVentas.Count != 0)
+        //     {
+        //         return (oVentas, totalElements);
+        //     }
+        //     else
+        //     {
+        //         throw new Exception("No se encontraron ventas");
+        //     }
+        // }
 
         public IEnumerable<Venta> FiltrarVentas(string searchTerm, int limite)
         {

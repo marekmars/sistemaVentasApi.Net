@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Web_Service_.Net_Core.Models.Request
 {
-    public class ClientesRequest
+    public class ClienteRequest
     {
         public long Id { get; set; }
 

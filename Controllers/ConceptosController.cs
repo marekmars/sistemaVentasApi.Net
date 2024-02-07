@@ -15,31 +15,31 @@ namespace Web_Service_.Net_Core.Controllers
     [Authorize]
     public class ConceptosController : ControllerBase
     {
-        private readonly IConceptoService _conceptoService;
-        public ConceptosController(IConceptoService conceptoService)
-        {
-            _conceptoService = conceptoService;
-        }
-        [HttpGet("{idVenta}")]
-        public IActionResult GetAllbyVenta(long idVenta)
-        {
+        // private readonly IConceptoService _conceptoService;
+        // public ConceptosController(IConceptoService conceptoService)
+        // {
+        //     _conceptoService = conceptoService;
+        // }
+        // [HttpGet("{idVenta}")]
+        // public IActionResult GetAllbyVenta(long idVenta)
+        // {
 
-            Response response = new();
-            try
-            {
-                var conceptos = _conceptoService.GetAllbyVenta(idVenta);
-                response.Data = conceptos;
-                response.Success = 1;
+        //     Response response = new();
+        //     try
+        //     {
+        //         var conceptos = _conceptoService.GetAllbyVenta(idVenta);
+        //         response.Data = conceptos;
+        //         response.Success = 1;
 
-            }
-            catch (Exception ex)
-            {
+        //     }
+        //     catch (Exception ex)
+        //     {
 
-                response.Success = 0;
-                response.Message = $"Ocurrio un error buscando los conceptos: {ex.Message}";
-            }
+        //         response.Success = 0;
+        //         response.Message = $"Ocurrio un error buscando los conceptos: {ex.Message}";
+        //     }
 
-            return Ok(response);
-        }
+        //     return Ok(response);
+        // }
     }
 }

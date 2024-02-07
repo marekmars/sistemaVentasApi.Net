@@ -21,128 +21,128 @@ namespace Web_Service_.Net_Core.Controllers
         {
             _ventaService = ventaService;
         }
-        [HttpPost]
-        public IActionResult Add(VentaRequest oVentaRequest)
-        {
-            Response response = new();
-            try
-            {
+        //     [HttpPost]
+        //     public IActionResult Add(VentaRequest oVentaRequest)
+        //     {
+        //         Response response = new();
+        //         try
+        //         {
 
-                _ventaService.Add(oVentaRequest);
-                response.Success = 1;
-                response.Message = "Se agrego correctamente";
-                response.Data = oVentaRequest;
-            }
-            catch (Exception ex)
-            {
-                response.Success = 0;
-                response.Message = ex.Message;
-            }
+        //             _ventaService.Add(oVentaRequest);
+        //             response.Success = 1;
+        //             response.Message = "Se agrego correctamente";
+        //             response.Data = oVentaRequest;
+        //         }
+        //         catch (Exception ex)
+        //         {
+        //             response.Success = 0;
+        //             response.Message = ex.Message;
+        //         }
 
-            return Ok(response);
+        //         return Ok(response);
 
-        }
-        [Authorize(Roles = "Administrador")]
-        [HttpDelete("{Id}")]
-        public IActionResult Delete(long Id)
-        {
-            Response response = new();
-            try
-            {
-                _ventaService.Delete(Id);
-                response.Success = 1;
-                response.Message = "Se elimino correctamente";
-            }
-            catch (Exception ex)
-            {
-                response.Success = 0;
-                response.Message = ex.Message;
-            }
+        //     }
+        //     [Authorize(Roles = "Administrador")]
+        //     [HttpDelete("{Id}")]
+        //     public IActionResult Delete(long Id)
+        //     {
+        //         Response response = new();
+        //         try
+        //         {
+        //             _ventaService.Delete(Id);
+        //             response.Success = 1;
+        //             response.Message = "Se elimino correctamente";
+        //         }
+        //         catch (Exception ex)
+        //         {
+        //             response.Success = 0;
+        //             response.Message = ex.Message;
+        //         }
 
-            return Ok(response);
+        //         return Ok(response);
 
-        }
+        //     }
 
-        [HttpGet("GetAllP")]
-        public IActionResult GetAllP([FromQuery] ParametrosPaginado oParametrosPaginado)
-        {
-            Response oResponse = new Response();
-            try
-            {
-                oResponse.Success = 1;
-                var result = _ventaService.GetAllP(oParametrosPaginado);
+        //     [HttpGet("GetAllP")]
+        //     public IActionResult GetAllP([FromQuery] ParametrosPaginado oParametrosPaginado)
+        //     {
+        //         Response oResponse = new Response();
+        //         try
+        //         {
+        //             oResponse.Success = 1;
+        //             var result = _ventaService.GetAllP(oParametrosPaginado);
 
-                oResponse.Data = new
-                {
-                    Data = result.Data,
-                    TotalElements = result.TotalElements
-                };
-            }
-            catch (Exception ex)
-            {
-                oResponse.Success = 0;
-                oResponse.Message = $"Ocurrió un error buscando las ventas {ex.Message}";
-            }
-            return Ok(oResponse);
-        }
+        //             oResponse.Data = new
+        //             {
+        //                 Data = result.Data,
+        //                 TotalElements = result.TotalElements
+        //             };
+        //         }
+        //         catch (Exception ex)
+        //         {
+        //             oResponse.Success = 0;
+        //             oResponse.Message = $"Ocurrió un error buscando las ventas {ex.Message}";
+        //         }
+        //         return Ok(oResponse);
+        //     }
 
-        [HttpGet("{Id}")]
-        public IActionResult Get(int Id)
-        {
-            Response response = new();
-            try
-            {
-                response.Data = _ventaService.Get(Id); ;
-                response.Success = 1;
-            }
-            catch (Exception ex)
-            {
-                response.Success = 0;
-                response.Message = ex.Message;
-            }
+        //     [HttpGet("{Id}")]
+        //     public IActionResult Get(int Id)
+        //     {
+        //         Response response = new();
+        //         try
+        //         {
+        //             response.Data = _ventaService.Get(Id); ;
+        //             response.Success = 1;
+        //         }
+        //         catch (Exception ex)
+        //         {
+        //             response.Success = 0;
+        //             response.Message = ex.Message;
+        //         }
 
-            return Ok(response);
-        }
-        [HttpGet("filter")]
-        public IActionResult FiltrarVentas([FromQuery] string searchTerm, [FromQuery] int limite = 5)
-        {
+        //         return Ok(response);
+        //     }
+        //     [HttpGet("filter")]
+        //     public IActionResult FiltrarVentas([FromQuery] string searchTerm, [FromQuery] int limite = 5)
+        //     {
 
-            Response response = new();
-            try
-            {
-                var ventasFiltradas = _ventaService.FiltrarVentas(searchTerm, limite);
-                response.Success = 1;
-                response.Data = ventasFiltradas;
+        //         Response response = new();
+        //         try
+        //         {
+        //             var ventasFiltradas = _ventaService.FiltrarVentas(searchTerm, limite);
+        //             response.Success = 1;
+        //             response.Data = ventasFiltradas;
 
-            }
-            catch (System.Exception)
-            {
-                response.Success = 0;
-                response.Message = "No se encontraron ventas filtradas";
+        //         }
+        //         catch (System.Exception)
+        //         {
+        //             response.Success = 0;
+        //             response.Message = "No se encontraron ventas filtradas";
 
-            }
-            return Ok(response);
-        }
-          [HttpGet("filterDate")]
-        public IActionResult FiltrarVentasDate([FromQuery] string fecha, [FromQuery] int limite = 5)
-        {
+        //         }
+        //         return Ok(response);
+        //     }
+        //       [HttpGet("filterDate")]
+        //     public IActionResult FiltrarVentasDate([FromQuery] string fecha, [FromQuery] int limite = 5)
+        //     {
 
-            Response response = new();
-            try
-            {
-                var ventasFiltradas = _ventaService.FiltrarVentasFecha(fecha, limite);
-                response.Success = 1;
-                response.Data = ventasFiltradas;
+        //         ApiResponse response = new();
+        //         try
+        //         {
+        //             var ventasFiltradas = _ventaService.FiltrarVentasFecha(fecha, limite);
+        //             response.Success = 1;
+        //             response.Data = ventasFiltradas;
 
-            }
-            catch (System.Exception)
-            {
-                response.Success = 0;
-                response.Message = "No se encontraron ventas filtradas";
+        //         }
+        //         catch (System.Exception)
+        //         {
+        //             response.Success = 0;
+        //             response.Message = "No se encontraron ventas filtradas";
 
-            }
-            return Ok(response);
-        }
+        //         }
+        //         return Ok(response);
+        //     }
 
     }
 }

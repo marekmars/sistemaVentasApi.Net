@@ -3,19 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Web_Service_.Net_Core.Models.Response
+namespace Web_Service_.Net_Core.Models.ApiResponse
 {
-    public class Response
+    public class ApiResponse<T>
     {
         public int Success { get; set; }
         public string? Message { get; set; }
-        public object? Data { get; set; }
-
-
-        public Response()
-        {
-            Success = 0;
-
-        }
+        public IEnumerable<T>? Data { get; set; }
+        public int TotalCount { get; set; }
     }
 }

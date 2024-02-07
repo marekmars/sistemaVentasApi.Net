@@ -10,12 +10,12 @@ namespace Web_Service_.Net_Core.Services
 {
     public interface IProductoService
     {
-        public Producto Get();
-        public List<Producto> GetAll();
+        public Producto Get(long id);
+        public List<Producto> Get();
         public void Edit(ProductoRequest oProductoRequest);
         public void Add(ProductoRequest oProductoRequest);
         public void Delete(long id);
-        public List<Producto> FiltrarProductos(string searchTerm, int limite);
-        public (IEnumerable<Producto> Data, int TotalElements) GetAllP(ParametrosPaginado oParametrosPaginado);
+        // public List<Producto> FiltrarProductos(string searchTerm, int limite);
+        // public (IEnumerable<Producto> Data, int TotalElements) GetAllP(ProductQueryParameters oParametrosPaginado);
     }
 }

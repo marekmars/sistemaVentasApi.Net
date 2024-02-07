@@ -5,9 +5,10 @@ using System.Threading.Tasks;
 
 namespace Web_Service_.Net_Core.Models.Tools
 {
-    public class ParametrosPaginado
+    public class QueryParameters
     {
-        public int PageIndex { get; set; }
-        public int ItemsPerPage { get; set; }
+        public string? Filter { get; set; }
+        public int? Limit { get; set; }
+        public int? Skip { get; set; }
     }
 }

@@ -6,12 +6,14 @@ using System.Security.Claims;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Web_Service_.Net_Core.Controllers;
 using Web_Service_.Net_Core.Models;
+using Web_Service_.Net_Core.Models.ApiResponse;
 using Web_Service_.Net_Core.Models.Common;
 using Web_Service_.Net_Core.Models.Request;
 using Web_Service_.Net_Core.Models.Response;
@@ -20,53 +22,47 @@ using Web_Service_.Net_Core.Tools;
 
 namespace Web_Service_.Net_Core.Services
 {
+
     public class UsuarioService : IUsuarioService
     {
         private readonly AppSetting _appSettings;
         private readonly DBContext _context;
+
 
         public UsuarioService(IOptions<AppSetting> appSetings, DBContext dBContext)
         {
             _appSettings = appSetings.Value;
             _context = dBContext;
         }
-        public UserResponse Auth(AuthRequest oModel)
+        public UserResponse Authenticate(AuthRequest oAuthRequest)
         {
             UserResponse userResponse = new();
-            try
+            if (string.IsNullOrEmpty(oAuthRequest.User) || string.IsNullOrEmpty(oAuthRequest.Clave))
             {
-
-                string encryptPassword = Encrypt.GetSHA256(oModel.Clave);
-                var usuario = _context.Usuarios.Where(user => user.Correo == oModel.User && user.Clave == encryptPassword).FirstOrDefault();
-                if (usuario != null)
-                {
-                    userResponse.Correo = usuario.Correo;
-                    userResponse.Rol = getRol(usuario);
-
-                    userResponse.Token = GetToken(usuario);
-                }
-                else
-                {
-                    userResponse = null;
-                }
-
+                throw new Exception("Falta el usuario o la clave");
             }
-            catch (System.Exception)
+
+            string encryptPassword = Encrypt.GetSHA256(oAuthRequest.Clave);
+            Usuario? oUsuario = _context.Usuarios.Where(user => user.Correo == oAuthRequest.User
+            && user.Clave == encryptPassword
+            && user.Estado == true).FirstOrDefault();
+
+            if (oUsuario == null)
             {
-
-                throw;
+                throw new Exception("Credenciales incorrectas");
             }
+            userResponse.Correo = oUsuario.Correo;
+            userResponse.Rol = GetRol(oUsuario);
+            userResponse.Token = GetToken(oUsuario);
             return userResponse;
-
         }
 
         private string GetToken(Usuario usuario)
         {
+            if (usuario == null) throw new("Usuario no encontrado");
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
-            string? rol = "";
-
-            rol = getRol(usuario);
+            string? rol = GetRol(usuario);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[]{
@@ -82,102 +78,147 @@ namespace Web_Service_.Net_Core.Services
             return tokenHandler.WriteToken(token);
         }
 
-        private string? getRol(Usuario usuario)
+        private string GetRol(Usuario usuario)
         {
-            string? rol;
-            return rol = _context.Rols.Where(x => x.Id == usuario.IdRol).Select(x => x.Nombre).FirstOrDefault();
-
+            if (usuario == null) throw new("Usuario no encontrado");
+            return _context.Rols.Where(x => x.Id == usuario.IdRol).Select(x => x.Nombre).FirstOrDefault();
         }
 
-        public List<Usuario> GetAll()
+
+        public ApiResponse<Usuario> GetUsuarios(QueryParameters queryParameters)
         {
-            List<Usuario>? usuarios = [.. _context.Usuarios.OrderBy(x => x.Apellido)];
+            IQueryable<Usuario> query = _context.Usuarios.Include(u => u.Rol);
+            query = query.Where(u => u.Estado == true);
+            var totalElements = _context.Clientes.Count();
 
-            if (usuarios.Count > 0)
+            if (queryParameters.Skip.HasValue)
             {
-                return usuarios;
-
+                query = query.Skip(queryParameters.Skip.Value);
             }
-            else
+            if (queryParameters.Limit.HasValue)
             {
-                throw new Exception("No se encontraron productos");
+                query = query.Take(queryParameters.Limit.Value);
             }
 
+
+            if (!string.IsNullOrEmpty(queryParameters.Filter))
+            {
+                query = query.Where(p => EF.Functions.Like(p.Nombre, $"%{queryParameters.Filter}%") ||
+                                          EF.Functions.Like(p.Apellido, $"%{queryParameters.Filter}%") ||
+                                          EF.Functions.Like(p.Dni, $"%{queryParameters.Filter}%") ||
+                                          EF.Functions.Like(p.Rol.Nombre, $"%{queryParameters.Filter}%"));
+            }
+            var usuarios = query.ToList();
+
+            if (usuarios.Count == 0) throw new Exception("No se encontraron usuarios");
+
+            return new ApiResponse<Usuario>
+            {
+                Success = 1,
+                Message = "Usuarios obtenidos correctamente",
+                Data = usuarios,
+                TotalCount = totalElements
+            };
         }
 
-        public void Delete(int id)
+        public ApiResponse<Usuario> DeleteUsuario(long Id)
         {
-            Usuario? oUsuario = _context.Usuarios.Find(id);
-            if (oUsuario != null)
-            {
-                _context.Remove(oUsuario);
-                _context.SaveChanges();
-            }
-        }
-
-        public void Edit(UsuarioRequest oUsuarioRequest)
-        {
-
-Console.WriteLine("Editando usuario: "+oUsuarioRequest.IdRol);
-            Usuario? oUsuario = _context.Usuarios.Find(oUsuarioRequest.Id);
-            if (oUsuario != null)
-            {
-
-                oUsuario.IdRol = oUsuarioRequest.IdRol != 0 ? oUsuarioRequest.IdRol : oUsuario.IdRol;
-                oUsuario.Nombre = !string.IsNullOrEmpty(oUsuarioRequest.Nombre) ? oUsuarioRequest.Nombre : oUsuario.Nombre;
-                oUsuario.Apellido = !string.IsNullOrEmpty(oUsuarioRequest.Apellido) ? oUsuarioRequest.Apellido : oUsuario.Apellido;
-                oUsuario.Dni = !string.IsNullOrEmpty(oUsuarioRequest.Dni) ? oUsuarioRequest.Dni : oUsuario.Dni;
-                oUsuario.Correo = !string.IsNullOrEmpty(oUsuarioRequest.Correo) ? oUsuarioRequest.Correo : oUsuario.Correo;
-                oUsuario.Clave = oUsuario.Clave;
-
-                if (oUsuarioRequest.Clave != null
-                && oUsuarioRequest.Clave.Trim() != ""
-                && Encrypt.GetSHA256(oUsuarioRequest.Clave) != oUsuario.Clave)
-                {
-                    oUsuario.Clave = Encrypt.GetSHA256(oUsuarioRequest.Clave);
-                }
-            }
+            Usuario? oUsuario = _context.Usuarios.Find(Id) ?? throw new Exception("No se encontro el usuario");
+            oUsuario.Estado = false;
             _context.Entry(oUsuario).State = EntityState.Modified;
             _context.SaveChanges();
+
+            return new ApiResponse<Usuario>
+            {
+                Success = 1,
+                Message = "Usuario eliminado correctamente",
+                Data = [oUsuario],
+                TotalCount = 1
+            };
         }
 
-        public void Add(UsuarioRequest oUsuarioRequest)
+        public ApiResponse<Usuario> UpdateUsuario(UsuarioRequest oUsuarioRequest)
+        {
+            Console.WriteLine("Editando usuario: " + oUsuarioRequest.IdRol);
+            Usuario? oUsuario = _context.Usuarios
+                               .Include(u => u.Rol)
+                               .Where(c => c.Id == oUsuarioRequest.Id && c.Estado == true)
+                               .FirstOrDefault()
+                               ?? throw new Exception("No se encontro un usuario activo con ese ID");
+
+
+
+            oUsuario.IdRol = oUsuarioRequest.IdRol != 0 ? oUsuarioRequest.IdRol : oUsuario.IdRol;
+            oUsuario.Nombre = !string.IsNullOrEmpty(oUsuarioRequest.Nombre) ? oUsuarioRequest.Nombre : oUsuario.Nombre;
+            oUsuario.Apellido = !string.IsNullOrEmpty(oUsuarioRequest.Apellido) ? oUsuarioRequest.Apellido : oUsuario.Apellido;
+            oUsuario.Dni = !string.IsNullOrEmpty(oUsuarioRequest.Dni) ? oUsuarioRequest.Dni : oUsuario.Dni;
+            oUsuario.Correo = !string.IsNullOrEmpty(oUsuarioRequest.Correo) ? oUsuarioRequest.Correo : oUsuario.Correo;
+            oUsuario.Estado = true;
+            oUsuario.Clave = oUsuario.Clave;
+
+            if (oUsuarioRequest.Clave != null
+            && oUsuarioRequest.Clave.Trim() != ""
+            && Encrypt.GetSHA256(oUsuarioRequest.Clave) != oUsuario.Clave)
+            {
+                oUsuario.Clave = Encrypt.GetSHA256(oUsuarioRequest.Clave);
+            }
+
+            _context.Entry(oUsuario).State = EntityState.Modified;
+            _context.SaveChanges();
+            return new ApiResponse<Usuario>
+            {
+                Success = 1,
+                Message = "Usuario actualizado correctamente",
+                Data = [oUsuario],
+                TotalCount = 1
+            };
+
+        }
+
+
+        public ApiResponse<Usuario> AddUsuario(UsuarioRequest oUsuarioRequest)
         {
             Usuario oUsuario = new()
             {
                 Nombre = oUsuarioRequest.Nombre,
-                IdRol = oUsuarioRequest.IdRol,
                 Apellido = oUsuarioRequest.Apellido,
                 Dni = oUsuarioRequest.Dni,
                 Correo = oUsuarioRequest.Correo,
-                Clave = Encrypt.GetSHA256(oUsuarioRequest.Clave)
+                IdRol = oUsuarioRequest.IdRol,
+                Clave = Encrypt.GetSHA256(oUsuarioRequest.Clave),
+                Estado = true,
             };
             _context.Add(oUsuario);
             _context.SaveChanges();
+
+            return new ApiResponse<Usuario>
+            {
+                Success = 1,
+                Message = "Usuario creado correctamente",
+                Data = [oUsuario],
+                TotalCount = 1
+            };
         }
 
-        public (IEnumerable<Usuario> Data, int TotalElements) GetAllP(ParametrosPaginado oParametrosPaginado)
+        public ApiResponse<Usuario> GetUsuario(long id)
         {
+            var oUsuario = _context.Usuarios
+               .Include(u => u.Rol)
+               .FirstOrDefault(u => u.Id == id);
 
-            List<Usuario> oClientes = new();
-
-            var totalElements = _context.Clientes.Count(); // Obtener el total de elementos
-
-            oClientes = _context.Usuarios.OrderByDescending(d => d.Id)
-            .Include(x => x.Rol)
-                .Skip((oParametrosPaginado.PageIndex) * oParametrosPaginado.ItemsPerPage)
-                .Take(oParametrosPaginado.ItemsPerPage).ToList();
-
-            if (oClientes.Count != 0)
+            if (oUsuario == null)
             {
-                return (oClientes, totalElements);
+                throw new Exception("No se encontro el cliente");
             }
-            else
+
+            return new ApiResponse<Usuario>
             {
-                throw new Exception("No se encontraron clientes");
-            }
+                Success = 1,
+                Message = "Usuario obtenido correctamente",
+                Data = [oUsuario],
+                TotalCount = 1
+            };
         }
-
     }
 }
 

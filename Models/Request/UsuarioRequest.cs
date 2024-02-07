@@ -8,7 +8,7 @@ namespace Web_Service_.Net_Core.Models.Request
 {
     public class UsuarioRequest
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
 
         public int IdRol { get; set; }
         [ForeignKey("IdRol")]

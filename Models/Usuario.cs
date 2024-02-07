@@ -6,7 +6,7 @@ namespace Web_Service_.Net_Core.Models;
 
 public partial class Usuario
 {
-    public int Id { get; set; }
+    public long Id { get; set; }
 
     public int IdRol { get; set; }
     [ForeignKey("IdRol")]
@@ -19,8 +19,8 @@ public partial class Usuario
     public string Nombre { get; set; } = null!;
 
     public string Apellido { get; set; } = null!;
+    public bool Estado { get; set; } = true;
 
     public string Dni { get; set; } = null!;
 
-    // public virtual Rol IdRolNavigation { get; set; } = null!;
 }

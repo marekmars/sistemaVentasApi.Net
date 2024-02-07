@@ -12,7 +12,7 @@ namespace Web_Service_.Net_Core.Services
     {
         public void Add(VentaRequest oVentaRequest);
         public IEnumerable<Venta> GetAll();
-        public (IEnumerable<Venta> Data, int TotalElements) GetAllP(ParametrosPaginado oParametrosPaginado);
+        // public (IEnumerable<Venta> Data, int TotalElements) GetAllP(ProductQueryParameters oParametrosPaginado);
         public Venta Get(int id);
         public void Edit(VentaRequest oVentaRequest);
         public void Delete(long id);
