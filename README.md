@@ -18,11 +18,13 @@ Base URL: `/api`
   - `filter` (optional): Filter clients by name, last name, or DNI.
   - `skip` (optional): Number of records to skip.
   - `limit` (optional): Maximum number of records to retrieve.
+  - `orderBy` (optional): Property by which to order the results (e.g., "name", "lastname").
+  - `desc` (optional): Set to true for descending order, false or omit for ascending order.
 
 #### Example
 
 ```http
-GET /api/clientes/clientes?filter=John&skip=0&limit=10
+GET /api/clientes/clientes?filter=John&skip=0&limit=10&orderBy=name&desc=true
 ```
 
 #### Response
@@ -274,11 +276,13 @@ POST /api/usuarios/login
   - `filter` (optional): Filter users by name, last name, or DNI.
   - `skip` (optional): Number of records to skip.
   - `limit` (optional): Maximum number of records to retrieve.
+  - `orderBy` (optional): Property by which to order the results (e.g., "name", "lastname").
+  - `desc` (optional): Set to true for descending order, false or omit for ascending order.
 
 #### Example
 
 ```http
-GET /api/usuarios/usuarios?filter=John&skip=0&limit=10
+GET /api/usuarios/usuarios?filter=John&skip=0&limit=10&orderBy=name&desc=true
 ```
 
 #### Response
