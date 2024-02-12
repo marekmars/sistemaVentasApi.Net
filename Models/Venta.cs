@@ -20,7 +20,7 @@ public partial class Venta
 
     public bool Estado {get;set;}
     
-    public virtual ICollection<Concepto> Conceptos { get; set; } = new List<Concepto>();
+    public virtual List<Concepto> Conceptos { get; set; } = new List<Concepto>();
 
 
     // public Cliente IdClienteNavigation { get; set; } = null!;

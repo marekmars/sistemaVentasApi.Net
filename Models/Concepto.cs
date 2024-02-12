@@ -24,6 +24,7 @@ public partial class Concepto
 
     [ForeignKey("IdProducto")]
     public Producto? Producto { get; set; }
+    public bool Estado {get;set;}
 
 
 

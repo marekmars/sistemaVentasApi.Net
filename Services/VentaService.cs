@@ -43,7 +43,8 @@ namespace Web_Service_.Net_Core.Services
                             IdProducto = item.IdProducto,
                             Cantidad = item.Cantidad,
                             PrecioUnitario = item.PrecioUnitario,
-                            Importe = item.Cantidad * item.PrecioUnitario
+                            Importe = item.Cantidad * item.PrecioUnitario,
+                            Estado = true
                         };
                         _context.Conceptos.Add(concepto);
                     }
@@ -72,21 +73,53 @@ namespace Web_Service_.Net_Core.Services
 
         public ApiResponse<Venta> DeleteVenta(long Id)
         {
-            Venta? oVenta = _context.Ventas
-                                .Where(v => v.Id == Id && v.Estado == true)
-                                .FirstOrDefault()
-                                ?? throw new Exception("No se encontro un Venta activo con ese ID");
-
-            oVenta.Estado = false;
-            _context.Entry(oVenta).State = EntityState.Modified;
-            _context.SaveChanges();
-            return new ApiResponse<Venta>
+            using (var transaction = _context.Database.BeginTransaction())
             {
-                Success = 1,
-                Message = "Venta eliminada correctamente",
-                Data = null,
-                TotalCount = 1
-            };
+                try
+                {
+                    // Find the Venta
+                    Venta? oVenta = _context.Ventas
+                                        .Where(v => v.Id == Id && v.Estado == true)
+                                        .FirstOrDefault()
+                                        ?? throw new Exception("No se encontró una Venta activa con ese ID");
+
+                    // Set the Estado to false for the Venta
+                    oVenta.Estado = false;
+                    _context.Entry(oVenta).State = EntityState.Modified;
+
+                    // Find related objects (assuming ObjetoConcepto with IdVenta property)
+                    var conceptos = _context.Conceptos
+                                                       .Where(c => c.IdVenta == Id && c.Estado == true)
+                                                       .ToList();
+
+                    // Set the Estado to false for each related ObjetoConcepto
+                    foreach (var concepto in conceptos)
+                    {
+                        concepto.Estado = false;
+                        _context.Entry(concepto).State = EntityState.Modified;
+                    }
+
+                    // Save changes to the database
+                    _context.SaveChanges();
+
+                    // Commit the transaction
+                    transaction.Commit();
+
+                    return new ApiResponse<Venta>
+                    {
+                        Success = 1,
+                        Message = "Venta y objetos relacionados eliminados correctamente",
+                        Data = null,
+                        TotalCount = 1
+                    };
+                }
+                catch (Exception)
+                {
+                    // An error occurred, rollback the transaction
+                    transaction.Rollback();
+                    throw; // Re-throw the exception to propagate it
+                }
+            }
         }
 
         public ApiResponse<Venta> FullDeleteVenta(long Id)
@@ -193,156 +226,75 @@ namespace Web_Service_.Net_Core.Services
             };
         }
 
+//TODO: Probar bien este metodo que esta raro xD
         public ApiResponse<Venta> UpdateVenta(VentaRequest oVentaRequest)
         {
-            throw new NotImplementedException();
+            using (var dbTransaction = _context.Database.BeginTransaction())
+            {
+                try
+                {
+                    Venta? oVenta = _context.Ventas
+                       .Include(v => v.Conceptos)  // Include Conceptos for updating
+                       .FirstOrDefault(v => v.Id == oVentaRequest.Id)
+                       ?? throw new Exception("No se encontró una Venta con ese ID");
+
+                    oVenta.Total = oVentaRequest.Conceptos.Count > 0 ? oVentaRequest.Conceptos.Sum(x => x.Cantidad * x.PrecioUnitario) : oVenta.Total;
+                    oVenta.Fecha = oVentaRequest.Fecha ?? oVenta.Fecha;
+                    oVenta.IdCliente = oVentaRequest.IdCliente != 0 ? oVentaRequest.IdCliente : oVenta.IdCliente;
+                    oVenta.Estado = true;
+
+                    _context.Entry(oVenta).State = EntityState.Modified;
+                    _context.SaveChanges();
+
+                    foreach (var updatedConcepto in oVentaRequest.Conceptos)
+                    {
+                        var existingConcepto = _context.Conceptos.FirstOrDefault(ec => ec.Id == updatedConcepto.Id);
+
+                        if (existingConcepto != null)
+                        {
+                            // Update properties of the existing Concepto
+                            existingConcepto.IdProducto = updatedConcepto.IdProducto;
+                            existingConcepto.Cantidad = updatedConcepto.Cantidad;
+                            existingConcepto.PrecioUnitario = updatedConcepto.PrecioUnitario;
+                            existingConcepto.Importe = existingConcepto.Cantidad * existingConcepto.PrecioUnitario;
+
+                            _context.Entry(existingConcepto).State = EntityState.Modified;
+                        }
+                        else
+                        {
+                            Concepto concepto = new()
+                            {
+                                IdVenta = oVentaRequest.Id,
+                                IdProducto = updatedConcepto.IdProducto,
+                                Cantidad = updatedConcepto.Cantidad,
+                                PrecioUnitario = updatedConcepto.PrecioUnitario,
+                                Importe = updatedConcepto.Cantidad * updatedConcepto.PrecioUnitario,
+                                Estado = true
+                            };
+                            _context.Entry(concepto).State = EntityState.Added;
+                        }
+                    }
+                    _context.SaveChanges();
+                    dbTransaction.Commit();
+
+                    Venta? oVentaRes = _context.Ventas
+                              .Include(x => x.Cliente)
+                              .Include(x => x.Conceptos)
+                              .FirstOrDefault(x => x.Id == oVenta.Id);
+                    return new ApiResponse<Venta>
+                    {
+                        Success = 1,
+                        Message = "Se edito correctamente la venta",
+                        Data = oVentaRes != null ? [oVentaRes] : [],
+                        TotalCount = 1
+                    };
+                }
+                catch (Exception e)
+                {
+                    dbTransaction.Rollback();
+                    throw new Exception("No se pudo editar la venta" + e);
+                }
+            }
         }
-        // public void Add(VentaRequest oVentaRequest)
-        // {
-
-        //     using (var dbTransaction = _context.Database.BeginTransaction())
-        //     {
-        //         Console.WriteLine("ENTROO");
-        //         try
-        //         {
-        //             var venta = new Venta
-        //             {
-        //                 Total = oVentaRequest.Conceptos.Sum(x => x.Cantidad * x.PrecioUnitario),
-        //                 Fecha = DateTime.Now,
-        //                 IdVenta = oVentaRequest.IdVenta
-        //             };
-        //             _context.Ventas.Add(venta);
-        //             _context.SaveChanges();
-        //             foreach (var item in oVentaRequest.Conceptos)
-        //             {
-        //                 Concepto concepto = new()
-        //                 {
-        //                     IdVenta = venta.Id,
-        //                     IdProducto = item.IdProducto,
-        //                     Cantidad = item.Cantidad,
-        //                     PrecioUnitario = item.PrecioUnitario,
-        //                     Importe = item.Cantidad * item.PrecioUnitario
-        //                 };
-        //                 _context.Conceptos.Add(concepto);
-
-        //             }
-        //             _context.SaveChanges();
-        //             dbTransaction.Commit();
-        //         }
-        //         catch (Exception e)
-        //         {
-        //             dbTransaction.Rollback();
-        //             throw new Exception("No se pudo realizar la venta" + e);
-        //         }
-        //     }
-
-        // }
-
-        // public void Delete(long Id)
-        // {
-
-        //     Venta oVenta = _context.Ventas.Find(Id);
-        //     if (oVenta != null)
-        //     {
-        //         _context.Remove(oVenta);
-        //         _context.SaveChanges();
-        //     }
-        //     else
-        //     {
-        //         throw new Exception("No se encontro la venta");
-        //     }
-        // }
-
-        // public Venta Get(int id)
-        // {
-        //     Venta? oVenta = _context.Ventas.Find(id);
-
-        //     if (oVenta != null)
-        //     {
-        //         return oVenta;
-        //     }
-        //     else
-        //     {
-        //         throw new Exception("No se encontro la venta");
-        //     }
-        // }
-        // public IEnumerable<Venta> GetAll()
-        // {
-        //     throw new NotImplementedException();
-        // }
-
-        // public (IEnumerable<Venta> Data, int TotalElements) GetAllP(ProductQueryParameters oParametrosPaginado)
-        // {
-        //     List<Venta> oVentas = new();
-
-        //     var totalElements = _context.Ventas.Count(); // Obtener el total de elementos
-
-        //     oVentas = _context.Ventas
-        //              .OrderByDescending(d => d.Id)
-        //              .Include(v => v.Venta) // Assuming Venta is the navigation property in Venta
-        //              .Skip(oParametrosPaginado.PageIndex * oParametrosPaginado.ItemsPerPage)
-        //              .Take(oParametrosPaginado.ItemsPerPage)
-        //              .ToList();
-
-        //     if (oVentas.Count != 0)
-        //     {
-        //         return (oVentas, totalElements);
-        //     }
-        //     else
-        //     {
-        //         throw new Exception("No se encontraron ventas");
-        //     }
-        // }
-
-        // public IEnumerable<Venta> FiltrarVentas(string searchTerm, int limite)
-        // {
-        //     if (string.IsNullOrEmpty(searchTerm))
-        //     {
-        //         throw new Exception("La búsqueda no puede ser vacía");
-        //     }
-
-        //     List<Venta> oVentas = _context.Ventas.Include(v => v.Venta)
-        //         .Where(p => EF.Functions.Like(p.Venta.Nombre, $"%{searchTerm}%") ||
-        //                     EF.Functions.Like(p.Id.ToString(), $"%{searchTerm}%") ||
-        //                     EF.Functions.Like(p.Venta.Apellido, $"%{searchTerm}%"))
-        //         .Take(limite)
-        //         .ToList();
-
-        //     if (oVentas.Count != 0)
-        //     {
-        //         return oVentas;
-        //     }
-        //     else
-        //     {
-        //         throw new Exception("Venta no encontrada");
-        //     }
-        // }
-
-        // public IEnumerable<Venta> FiltrarVentasFecha(string date, int limite)
-        // {
-
-        //     if (!DateTime.TryParseExact(date, "yyyy-MM-dd", null, System.Globalization.DateTimeStyles.None, out DateTime fechaParseada))
-        //     {
-        //         throw new Exception("La búsqueda no puede ser vacía");
-        //     }
-        //     Console.WriteLine(date);
-
-        //     DateTime.TryParseExact(date, "yyyy-MM-dd", null, System.Globalization.DateTimeStyles.None, out DateTime dateParsed);
-        //     Console.WriteLine(dateParsed);
-        //     List<Venta> oVentas = _context.Ventas.Include(v=>v.Venta)
-        //         .Where(p => p.Fecha.Date == fechaParseada.Date)
-
-        //         .Take(limite)
-        //         .ToList();
-
-        //     if (oVentas.Count != 0)
-        //     {
-        //         return oVentas;
-        //     }
-        //     else
-        //     {
-        //         throw new Exception("Venta no encontrada");
-        //     }
-        // }
     }
 }

@@ -15,14 +15,18 @@ namespace Web_Service_.Net_Core.Models.Request
         [Range(1, Double.MaxValue, ErrorMessage = "IdCliente debe ser mayor a 0")]
         [ExisteCliente(ErrorMessage = "El cliente no existe")]
         public long IdCliente { get; set; }
-
         [Required]
         [MinLength(1, ErrorMessage = "Debe agregar por lo menos un concepto")]
+        
         public List<ConceptoRequest> Conceptos { get; set; } = [];
+        public DateTime? Fecha { get; set; }
+        public decimal? Total {get;set;}
         public bool Estado { get; set; }
     }
     public class ConceptoRequest
     {
+        [Range(1, Double.MaxValue, ErrorMessage = "Id debe ser mayor a 0")]
+        public long? Id { get; set; }
         [Range(1, Double.MaxValue, ErrorMessage = "la cantidad debe ser mayor a 0")]
         public int Cantidad { get; set; }
         [Required]
@@ -35,6 +39,7 @@ namespace Web_Service_.Net_Core.Models.Request
         [ExisteProducto(ErrorMessage = "El producto no existe")]
         [Range(1, Double.MaxValue, ErrorMessage = "IdProducto debe ser mayor a 0")]
         public long IdProducto { get; set; }
+        public bool Estado { get; set; }
     }
     #region Validaciones
     public class ExisteCliente : ValidationAttribute

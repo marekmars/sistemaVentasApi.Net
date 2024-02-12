@@ -144,6 +144,69 @@ namespace Web_Service_.Net_Core.Controllers
             }
             return Ok(oApiResponse);
         }
+        [HttpDelete("{Id}")]
+        [Authorize(Roles = "Administrador")]
+        public IActionResult Delete(long Id)
+        {
+            ApiResponse<Venta> oResponse = new();
+            try
+            {
+                oResponse = _ventaService.DeleteVenta(Id);
+
+            }
+            catch (Exception ex)
+            {
+                oResponse.Success = 0;
+                oResponse.Message = $"Ocurrio un error eliminando la venta {ex.Message}";
+                oResponse.Data = [];
+                oResponse.TotalCount = 0;
+            }
+            return Ok(oResponse);
+
+        }
+
+        [HttpDelete("fulldelete/{Id}")]
+        [Authorize(Roles = "Administrador")]
+        public IActionResult FullDeleteVentas(long Id)
+        {
+            ApiResponse<Venta> oResponse = new ApiResponse<Venta>();
+            try
+            {
+                oResponse = _ventaService.FullDeleteVenta(Id);
+
+            }
+            catch (Exception ex)
+            {
+                oResponse.Success = 0;
+                oResponse.Message = $"Ocurrio un error eliminando la venta {ex.Message}";
+                oResponse.Data = [];
+                oResponse.TotalCount = 0;
+            }
+            return Ok(oResponse);
+
+        }
+        [HttpPatch]
+        [Authorize(Roles = "Administrador")]
+
+        public IActionResult Udpate(VentaRequest oVentaRequest)
+        {
+
+            ApiResponse<Venta> oApiResponse = new();
+            try
+            {
+                oApiResponse = _ventaService.UpdateVenta(oVentaRequest);
+
+            }
+            catch (Exception ex)
+            {
+                oApiResponse.Success = 0;
+                oApiResponse.Message = $"Ocurrio un error actualizando el cliente {ex.Message}";
+                oApiResponse.Data = [];
+                oApiResponse.TotalCount = 0;
+            }
+            return Ok(oApiResponse);
+
+        }
 
         //     [HttpGet("filter")]
         //     public IActionResult FiltrarVentas([FromQuery] string searchTerm, [FromQuery] int limite = 5)

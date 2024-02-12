@@ -117,7 +117,7 @@ namespace Web_Service_.Net_Core.Controllers
             catch (Exception ex)
             {
                 oResponse.Success = 0;
-                oResponse.Message = $"Ocurrio un error buscando el cliente {ex.Message}";
+                oResponse.Message = $"Ocurrio un error eliminando el cliente {ex.Message}";
                 oResponse.Data = [];
                 oResponse.TotalCount = 0;
             }
