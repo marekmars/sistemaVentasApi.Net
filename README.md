@@ -475,7 +475,6 @@ POST /api/usuarios/usuarios
 }
 ```
 
-Certainly! Here's the API documentation for the `VentasController` in Markdown format:
 
 ```markdown
 ## Ventas Endpoints
