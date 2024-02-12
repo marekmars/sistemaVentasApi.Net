@@ -10,5 +10,7 @@ namespace Web_Service_.Net_Core.Models.Tools
         public string? Filter { get; set; }
         public int? Limit { get; set; }
         public int? Skip { get; set; }
+        public string? OrderBy { get; set; }
+        public bool Desc { get; set; }
     }
 }

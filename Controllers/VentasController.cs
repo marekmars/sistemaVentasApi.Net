@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Web_Service_.Net_Core.Models;
+using Web_Service_.Net_Core.Models.ApiResponse;
 using Web_Service_.Net_Core.Models.Request;
 using Web_Service_.Net_Core.Models.Response;
 using Web_Service_.Net_Core.Models.Tools;
@@ -86,23 +87,64 @@ namespace Web_Service_.Net_Core.Controllers
         //         return Ok(oResponse);
         //     }
 
-        //     [HttpGet("{Id}")]
-        //     public IActionResult Get(int Id)
-        //     {
-        //         Response response = new();
-        //         try
-        //         {
-        //             response.Data = _ventaService.Get(Id); ;
-        //             response.Success = 1;
-        //         }
-        //         catch (Exception ex)
-        //         {
-        //             response.Success = 0;
-        //             response.Message = ex.Message;
-        //         }
+        [HttpGet("{Id}")]
+        public IActionResult Get(int Id)
+        {
+            ApiResponse<Venta> oApiResponse = new();
+            try
+            {
+                oApiResponse = _ventaService.GetVenta(Id); ;
+            }
+            catch (Exception ex)
+            {
+                oApiResponse = new()
+                {
+                    Success = 1,
+                    Message = $"No se encontraron ventas: {ex.Message}",
+                    Data = null,
+                    TotalCount = 1
+                };
+            }
 
-        //         return Ok(response);
-        //     }
+            return Ok(oApiResponse);
+        }
+        [HttpGet]
+        public IActionResult Get([FromQuery] QueryParameters oQueryParameters)
+        {
+            ApiResponse<Venta> oResponse = new();
+            try
+            {
+                oResponse = _ventaService.GetVentas(oQueryParameters);
+            }
+            catch (Exception ex)
+            {
+                oResponse.Success = 0;
+                oResponse.Message = $"Ocurrio un error buscando la venta {ex.Message}";
+                oResponse.Data = [];
+                oResponse.TotalCount = 0;
+            }
+            return Ok(oResponse);
+        }
+        [HttpPost]
+        public IActionResult Add(VentaRequest oVentaRequest)
+        {
+            ApiResponse<Venta> oApiResponse = new();
+            try
+            {
+                // Call the service to add the new user
+                oApiResponse = _ventaService.AddVenta(oVentaRequest);
+            }
+            catch (Exception ex)
+            {
+                // Handle and log any exceptions
+                oApiResponse.Success = 0;
+                oApiResponse.Message = $"An error occurred while adding the sale: {ex.Message}";
+                oApiResponse.Data = [];
+                oApiResponse.TotalCount = 0;
+            }
+            return Ok(oApiResponse);
+        }
+
         //     [HttpGet("filter")]
         //     public IActionResult FiltrarVentas([FromQuery] string searchTerm, [FromQuery] int limite = 5)
         //     {

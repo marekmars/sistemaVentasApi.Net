@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Web_Service_.Net_Core.Models;
@@ -22,5 +23,7 @@ public partial class Usuario
     public bool Estado { get; set; } = true;
 
     public string Dni { get; set; } = null!;
+
+    
 
 }

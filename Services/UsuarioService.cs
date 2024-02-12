@@ -91,23 +91,54 @@ namespace Web_Service_.Net_Core.Services
             query = query.Where(u => u.Estado == true);
             var totalElements = _context.Clientes.Count();
 
+
+            query = query.Where(p => p.Estado == true);
+
+            if (!string.IsNullOrEmpty(queryParameters.OrderBy))
+            {
+                string orderByProperty = queryParameters.OrderBy.ToLower();
+                query = orderByProperty switch
+                {
+                    "name" => query.OrderBy(u => u.Nombre),
+                    "lastname" => query.OrderBy(u => u.Apellido),
+                    "dni" => query.OrderBy(u => u.Dni),
+                    "rol" => query.OrderBy(u => u.Rol.Nombre),
+                    "mail" => query.OrderBy(u => u.Correo),
+                    _ => query.OrderBy(u => u.Id),
+                };
+                if (queryParameters.Desc)
+                {
+                    query = query.Reverse(); // This assumes Reverse is a valid extension method for IQueryable (you may need to implement it)
+                }
+            }
+
+
+
+            if (!string.IsNullOrEmpty(queryParameters.Filter))
+            {
+                string filter = queryParameters.Filter.ToLower();
+                string[] filters = filter.Split(' ');
+
+                query = query.AsEnumerable().Where(u =>
+                    filters.All(f =>
+                        u.Nombre.Contains(f, StringComparison.CurrentCultureIgnoreCase) ||
+                        u.Apellido.Contains(f, StringComparison.CurrentCultureIgnoreCase) ||
+                        u.Dni.Contains(f, StringComparison.CurrentCultureIgnoreCase) ||
+                        u.Rol.Nombre.Contains(f, StringComparison.CurrentCultureIgnoreCase)
+                    )
+                ).AsQueryable();
+            }
+
             if (queryParameters.Skip.HasValue)
             {
                 query = query.Skip(queryParameters.Skip.Value);
             }
+
             if (queryParameters.Limit.HasValue)
             {
                 query = query.Take(queryParameters.Limit.Value);
             }
 
-
-            if (!string.IsNullOrEmpty(queryParameters.Filter))
-            {
-                query = query.Where(p => EF.Functions.Like(p.Nombre, $"%{queryParameters.Filter}%") ||
-                                          EF.Functions.Like(p.Apellido, $"%{queryParameters.Filter}%") ||
-                                          EF.Functions.Like(p.Dni, $"%{queryParameters.Filter}%") ||
-                                          EF.Functions.Like(p.Rol.Nombre, $"%{queryParameters.Filter}%"));
-            }
             var usuarios = query.ToList();
 
             if (usuarios.Count == 0) throw new Exception("No se encontraron usuarios");
@@ -216,6 +247,45 @@ namespace Web_Service_.Net_Core.Services
                 Success = 1,
                 Message = "Usuario obtenido correctamente",
                 Data = [oUsuario],
+                TotalCount = 1
+            };
+        }
+
+        public ApiResponse<Usuario> CorreoExiste(string correo)
+        {
+            Usuario? oUsuario = _context.Usuarios.Where(u => u.Correo == correo && u.Estado == true).FirstOrDefault();
+
+
+            if (oUsuario == null)
+            {
+                return new ApiResponse<Usuario>
+                {
+                    Success = 1,
+                    Message = "Correo válido",
+                    Data = [],
+                    TotalCount = 1
+                };
+            }
+            return new ApiResponse<Usuario>
+            {
+                Success = 0,
+                Message = "El correo ya existe",
+                Data = [oUsuario],
+                TotalCount = 1
+            };
+        }
+
+        public ApiResponse<Usuario> FullDeleteUsuario(long Id)
+        {
+            Usuario? oUsuario = _context.Usuarios.Find(Id) ?? throw new Exception("No se encontro el usuario");
+            _context.Remove(oUsuario);
+            _context.SaveChanges();
+
+            return new ApiResponse<Usuario>
+            {
+                Success = 1,
+                Message = "Usuario eliminado correctamente",
+                Data = null,
                 TotalCount = 1
             };
         }

@@ -1,9 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Web_Service_.Net_Core.Models;
 using Web_Service_.Net_Core.Models.ApiResponse;
@@ -32,8 +26,37 @@ namespace Web_Service_.Net_Core.Services
             // Add a condition to filter clients with State equal to 1
             query = query.Where(p => p.Estado == true);
 
-            // Add an OrderBy clause to make the query predictable
-            query = query.OrderBy(p => p.Id);
+            if (!string.IsNullOrEmpty(queryParameters.OrderBy))
+            {
+                string orderByProperty = queryParameters.OrderBy.ToLower();
+                query = orderByProperty switch
+                {
+                    "name" => query.OrderBy(c => c.Nombre),
+                    "lastname" => query.OrderBy(c => c.Apellido),
+                    "dni" => query.OrderBy(c => c.Dni),
+                    "mail" => query.OrderBy(c => c.Correo),
+                    _ => query.OrderBy(c => c.Id),
+                };
+                if (queryParameters.Desc)
+                {
+                    query = query.Reverse(); // This assumes Reverse is a valid extension method for IQueryable (you may need to implement it)
+                }
+            }
+
+
+            if (!string.IsNullOrEmpty(queryParameters.Filter))
+            {
+                string filter = queryParameters.Filter.ToLower();
+                string[] filters = filter.Split(' ');
+
+                query = query.AsEnumerable().Where(c =>
+                    filters.All(f =>
+                        c.Nombre.Contains(f, StringComparison.CurrentCultureIgnoreCase) ||
+                        c.Apellido.Contains(f, StringComparison.CurrentCultureIgnoreCase) ||
+                        c.Dni.Contains(f, StringComparison.CurrentCultureIgnoreCase)
+                    )
+                ).AsQueryable();
+            }
 
             if (queryParameters.Skip.HasValue)
             {
@@ -45,14 +68,7 @@ namespace Web_Service_.Net_Core.Services
                 query = query.Take(queryParameters.Limit.Value);
             }
 
-            if (!string.IsNullOrEmpty(queryParameters.Filter))
-            {
-                query = query.Where(p => EF.Functions.Like(p.Nombre, $"%{queryParameters.Filter}%") ||
-                                        EF.Functions.Like(p.Apellido, $"%{queryParameters.Filter}%") ||
-                                        EF.Functions.Like(p.Dni, $"%{queryParameters.Filter}%"));
-            }
 
-            Console.WriteLine("Paso");
 
             var clientes = query.ToList();
 
@@ -105,7 +121,7 @@ namespace Web_Service_.Net_Core.Services
                 TotalCount = 1
             };
         }
-      
+
         public ApiResponse<Cliente> UpdateCliente(ClienteRequest oClienteRequest)
         {
 
@@ -163,6 +179,30 @@ namespace Web_Service_.Net_Core.Services
                 Success = 1,
                 Message = "Cliente eliminado correctamente",
                 Data = null,
+                TotalCount = 1
+            };
+        }
+
+        public ApiResponse<Cliente> CorreoExiste(string correo)
+        {
+            Cliente? oCliente = _context.Clientes.Where(c => c.Correo == correo && c.Estado == true).FirstOrDefault();
+
+
+            if (oCliente == null)
+            {
+                return new ApiResponse<Cliente>
+                {
+                    Success = 1,
+                    Message = "Correo válido",
+                    Data = [],
+                    TotalCount = 1
+                };
+            }
+            return new ApiResponse<Cliente>
+            {
+                Success = 0,
+                Message = "El correo ya existe",
+                Data = [oCliente],
                 TotalCount = 1
             };
         }

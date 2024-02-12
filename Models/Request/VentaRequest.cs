@@ -9,7 +9,7 @@ namespace Web_Service_.Net_Core.Models.Request
 {
     public class VentaRequest
     {
-        [Key] 
+        [Key]
         public long Id { get; set; }
         [Required]
         [Range(1, Double.MaxValue, ErrorMessage = "IdCliente debe ser mayor a 0")]
@@ -18,21 +18,22 @@ namespace Web_Service_.Net_Core.Models.Request
 
         [Required]
         [MinLength(1, ErrorMessage = "Debe agregar por lo menos un concepto")]
-        public List<ConceptoRequest> Conceptos { get; set; }
-
-        public VentaRequest()
-        {
-            this.Conceptos = new List<ConceptoRequest>();
-        }
+        public List<ConceptoRequest> Conceptos { get; set; } = [];
+        public bool Estado { get; set; }
     }
     public class ConceptoRequest
     {
+        [Range(1, Double.MaxValue, ErrorMessage = "la cantidad debe ser mayor a 0")]
         public int Cantidad { get; set; }
-
+        [Required]
+        [Range(0, 9999999999999999.99, ErrorMessage = "El precio unitario debe ser mayor a 0")]
         public decimal PrecioUnitario { get; set; }
-
+        [Required]
+        [Range(0, 9999999999999999.99, ErrorMessage = "El importe debe ser mayor a 0")]
         public decimal Importe { get; set; }
-
+        [Required]
+        [ExisteProducto(ErrorMessage = "El producto no existe")]
+        [Range(1, Double.MaxValue, ErrorMessage = "IdProducto debe ser mayor a 0")]
         public long IdProducto { get; set; }
     }
     #region Validaciones
@@ -44,6 +45,19 @@ namespace Web_Service_.Net_Core.Models.Request
             using (DBContext db = new())
             {
                 if (db.Clientes.Find(IdCliente) == null) return false;
+            };
+
+            return true;
+        }
+    }
+    public class ExisteProducto : ValidationAttribute
+    {
+        public override bool IsValid(object value)
+        {
+            long IdProducto = (long)value;
+            using (DBContext db = new())
+            {
+                if (db.Productos.Find(IdProducto) == null) return false;
             };
 
             return true;

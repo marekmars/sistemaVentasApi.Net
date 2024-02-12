@@ -25,7 +25,7 @@ namespace Web_Service_.Net_Core.Controllers
         /// </summary>
         /// <param name="oModel">The authentication request model.</param>
         /// <returns>Returns the authentication response.</returns>
-        [Authorize(Roles = "Administrador")]
+
         [HttpPost("login")]
         public IActionResult Authenticate([FromBody] AuthRequest oModel)
         {
@@ -194,6 +194,49 @@ namespace Web_Service_.Net_Core.Controllers
                 oApiResponse.TotalCount = 0;
             }
             return Ok(oApiResponse);
+        }
+
+
+        [HttpGet("check")]
+        [Authorize(Roles = "Administrador")]
+        public IActionResult IsEmailValid([FromForm] string Correo)
+        {
+            ApiResponse<Usuario> oResponse = new ApiResponse<Usuario>();
+            try
+            {
+                oResponse = _usuarioService.CorreoExiste(Correo);
+            }
+            catch (Exception ex)
+            {
+                oResponse.Success = 0;
+                oResponse.Message = $"Ocurrio un error buscando el usuario {ex.Message}";
+                oResponse.Data = [];
+                oResponse.TotalCount = 0;
+            }
+            return Ok(oResponse);
+
+
+        }
+
+        [HttpDelete("fulldelete/{Id}")]
+        [Authorize(Roles = "Administrador")]
+        public IActionResult FullDeleteUsuario(long Id)
+        {
+            ApiResponse<Usuario> oResponse = new ApiResponse<Usuario>();
+            try
+            {
+                oResponse = _usuarioService.FullDeleteUsuario(Id);
+
+            }
+            catch (Exception ex)
+            {
+                oResponse.Success = 0;
+                oResponse.Message = $"Ocurrio un error eliminando el usuario {ex.Message}";
+                oResponse.Data = [];
+                oResponse.TotalCount = 0;
+            }
+            return Ok(oResponse);
+
         }
 
     }

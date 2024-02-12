@@ -1,4 +1,5 @@
 
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Web_Service_.Net_Core.Models;
@@ -123,6 +124,49 @@ namespace Web_Service_.Net_Core.Controllers
             return Ok(oResponse);
 
         }
+
+        [HttpGet("check")]
+        [Authorize(Roles = "Administrador")]
+        public IActionResult IsEmailValid([FromForm] string Correo)
+        {
+            ApiResponse<Cliente> oResponse = new ApiResponse<Cliente>();
+            try
+            {
+                oResponse = _clienteService.CorreoExiste(Correo);
+            }
+            catch (Exception ex)
+            {
+                oResponse.Success = 0;
+                oResponse.Message = $"Ocurrio un error buscando el cliente {ex.Message}";
+                oResponse.Data = [];
+                oResponse.TotalCount = 0;
+            }
+            return Ok(oResponse);
+
+
+        }
+
+        [HttpDelete("fulldelete/{Id}")]
+        [Authorize(Roles = "Administrador")]
+        public IActionResult FullDeleteCliente(long Id)
+        {
+            ApiResponse<Cliente> oResponse = new ApiResponse<Cliente>();
+            try
+            {
+                oResponse = _clienteService.FullDeleteCliente(Id);
+
+            }
+            catch (Exception ex)
+            {
+                oResponse.Success = 0;
+                oResponse.Message = $"Ocurrio un error eliminando el cliente {ex.Message}";
+                oResponse.Data = [];
+                oResponse.TotalCount = 0;
+            }
+            return Ok(oResponse);
+
+        }
+
 
     }
 

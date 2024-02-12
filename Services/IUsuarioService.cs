@@ -25,6 +25,8 @@ namespace Web_Service_.Net_Core.Services
         public ApiResponse<Usuario> UpdateUsuario(UsuarioRequest oUsuarioRequest);
         public ApiResponse<Usuario> DeleteUsuario(long Id);
         public UserResponse Authenticate(AuthRequest oAuthRequest);
+        public ApiResponse<Usuario> CorreoExiste(string correo);
+        public ApiResponse<Usuario> FullDeleteUsuario(long Id);
 
     }
 }

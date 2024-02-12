@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Web_Service_.Net_Core.Models;
+using Web_Service_.Net_Core.Models.ApiResponse;
 using Web_Service_.Net_Core.Models.Request;
 using Web_Service_.Net_Core.Models.Response;
 using Web_Service_.Net_Core.Models.Tools;
@@ -22,135 +23,131 @@ namespace Web_Service_.Net_Core.Controllers
         {
             _productoService = productoService;
         }
-        // [HttpGet]
-        // public IActionResult Get()
-        // {
-        //     Response oResponse = new Response();
-        //     try
-        //     {
+        [HttpGet("{id}")]
+        public IActionResult Get(long id)
+        {
+            ApiResponse<Producto> oResponse = new();
+            try
+            {
 
-        //         oResponse.Data =  _productoService.GetAll();;
-        //         oResponse.Success = 1;
-        //     }
-        //     catch (Exception ex)
-        //     {
-        //         oResponse.Message = ex.Message;
-        //     }
-        //     return Ok(oResponse);
+                oResponse = _productoService.GetProducto(id);
 
-        // }
-        // [HttpGet("filter")]
-        // public IActionResult FiltrarProductos([FromQuery] string searchTerm, [FromQuery] int limite = 5)
-        // {
-        //     Response response = new();
-        //     try
-        //     {
-        //         var productosFiltrados = _productoService.FiltrarProductos(searchTerm, limite);
-        //         if (productosFiltrados != null && productosFiltrados.Any())
-        //         {
-        //             response.Success = 1;
-        //             response.Data = productosFiltrados;
-        //         }
-        //         else
-        //         {
-        //             response.Success = 0;
-        //             response.Message = "No se encontraron productos filtrados";
-        //         }
-        //     }
-        //     catch (System.Exception)
-        //     {
+            }
+            catch (Exception ex)
+            {
+                oResponse.Success = 0;
+                oResponse.Message = $"Ocurrio un error buscando el producto {ex.Message}";
+                oResponse.Data = [];
+                oResponse.TotalCount = 0;
 
-        //         throw;
-        //     }
+            }
+            return Ok(oResponse);
+        }
 
+        [HttpGet]
+        public IActionResult Get([FromQuery] QueryParameters oQueryParameters)
+        {
+            ApiResponse<Producto> oResponse = new();
+            try
+            {
+                oResponse = _productoService.GetProductos(oQueryParameters);
+            }
+            catch (Exception ex)
+            {
+                oResponse.Success = 0;
+                oResponse.Message = $"Ocurrio un error buscando el producto {ex.Message}";
+                oResponse.Data = [];
+                oResponse.TotalCount = 0;
+            }
+            return Ok(oResponse);
+        }
 
-        //     return Ok(response);
-        // }
+        [HttpPost]
+        public IActionResult Add(ProductoRequest oProductoRequest)
+        {
 
-        // [HttpGet("GetAllP")]
-        // public IActionResult GetAllP([FromQuery] ParametrosPaginado oParametrosPaginado)
-        // {
-        //     Response oResponse = new Response();
-        //     try
-        //     {
-        //         oResponse.Success = 1;
-        //         var result = _productoService.GetAllP(oParametrosPaginado);
+            ApiResponse<Producto> oResponse = new ApiResponse<Producto>();
+            try
+            {
 
-        //         oResponse.Data = new
-        //         {
-        //             Data = result.Data,
-        //             TotalElements = result.TotalElements
-        //         };
-        //     }
-        //     catch (Exception ex)
-        //     {
-        //         oResponse.Success = 0;
-        //         oResponse.Message = $"Ocurrió un error buscando los productos {ex.Message}";
-        //     }
-        //     return Ok(oResponse);
-        // }
-        // [HttpPost]
-        // public IActionResult Add(ProductoRequest oProductoRequest)
-        // {
-        //     Response response = new();
-        //     try
-        //     {
+                oResponse = _productoService.AddProducto(oProductoRequest);
 
-        //         _productoService.Add(oProductoRequest);
-        //         response.Success = 1;
-        //         response.Message = "Se agrego correctamente";
-        //         response.Data = oProductoRequest;
-        //     }
-        //     catch (Exception ex)
-        //     {
-        //         response.Success = 0;
-        //         response.Message = ex.Message;
-        //     }
+            }
+            catch (Exception ex)
+            {
+                oResponse.Success = 0;
+                oResponse.Message = $"Ocurrio un error agregando el producto {ex.Message}";
+                oResponse.Data = [];
+                oResponse.TotalCount = 0;
+            }
+            return Ok(oResponse);
 
-        //     return Ok(response);
-        // }
+        }
 
-        // [HttpPut]
-        // public IActionResult Edit(ProductoRequest oProductoRequest)
-        // {
-        //     Response oResponse = new Response();
-        //     try
-        //     {
-        //         _productoService.Edit(oProductoRequest);
-        //         oResponse.Success = 1;
-        //         oResponse.Message = "Se edito correctamente";
+        [HttpPatch]
+        [Authorize(Roles = "Administrador")]
 
+        public IActionResult Udpate(ProductoRequest oCliente)
+        {
 
-        //     }
-        //     catch (Exception ex)
-        //     {
+            ApiResponse<Producto> oResponse = new();
+            try
+            {
+                oResponse = _productoService.UpdateProducto(oCliente);
 
-        //         oResponse.Success = 0;
-        //         oResponse.Message = ex.Message;
-        //     }
-        //     return Ok(oResponse);
-        // }
+            }
+            catch (Exception ex)
+            {
+                oResponse.Success = 0;
+                oResponse.Message = $"Ocurrio un error actualizando el producto {ex.Message}";
+                oResponse.Data = [];
+                oResponse.TotalCount = 0;
+            }
+            return Ok(oResponse);
 
-        // [HttpDelete("{Id}")]
-        // [Authorize(Roles = "Administrador")]
-        // public IActionResult Delete(long id)
-        // {
-        //     Response response = new();
-        //     try
-        //     {
-        //         _productoService.Delete(id);
-        //         response.Success = 1;
-        //         response.Message = "Se elimino correctamente";
-        //     }
-        //     catch (Exception ex)
-        //     {
-        //         response.Success = 0;
-        //         response.Message = ex.Message;
-        //     }
+        }
 
-        //     return Ok(response);
+        [HttpDelete("{Id}")]
+        [Authorize(Roles = "Administrador")]
+        public IActionResult Delete(long Id)
+        {
+            ApiResponse<Producto> oResponse = new ApiResponse<Producto>();
+            try
+            {
+                oResponse = _productoService.DeleteProducto(Id);
 
-        // }
+            }
+            catch (Exception ex)
+            {
+                oResponse.Success = 0;
+                oResponse.Message = $"Ocurrio un error buscando el producto {ex.Message}";
+                oResponse.Data = [];
+                oResponse.TotalCount = 0;
+            }
+            return Ok(oResponse);
+
+        }
+
+        [HttpDelete("fulldelete/{Id}")]
+        [Authorize(Roles = "Administrador")]
+        public IActionResult FullDeleteProducto(long Id)
+        {
+            ApiResponse<Producto> oResponse = new ApiResponse<Producto>();
+            try
+            {
+                oResponse = _productoService.FullDeleteProducto(Id);
+
+            }
+            catch (Exception ex)
+            {
+                oResponse.Success = 0;
+                oResponse.Message = $"Ocurrio un error eliminando el producto {ex.Message}";
+                oResponse.Data = [];
+                oResponse.TotalCount = 0;
+            }
+            return Ok(oResponse);
+
+        }
 
     }
 }

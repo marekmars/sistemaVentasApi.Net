@@ -15,5 +15,6 @@ public partial class Producto
 
     public int Stock { get; set; }
 
+    public bool Estado {get;set;}
     // public virtual ICollection<Concepto> Conceptos { get; set; } = new List<Concepto>();
 }
