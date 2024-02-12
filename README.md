@@ -475,6 +475,264 @@ POST /api/usuarios/usuarios
 }
 ```
 
+Certainly! Here's the API documentation for the `VentasController` in Markdown format:
+
+```markdown
+## Ventas Endpoints
+
+### 1. Get Sale by ID
+
+- **Request**
+  - **Method:** `GET`
+  - **Endpoint:** `/ventas/{Id}`
+
+- **Parameters:**
+  - `Id` (required): ID of the sale.
+
+- **Example**
+  ```http
+  GET /api/ventas/1
+  ```
+
+- **Response**
+  ```json
+  {
+    "success": 1,
+    "message": "Venta obtenida correctamente",
+    "data": [
+      {
+        "id": 1,
+        "idCliente": 39,
+        "cliente": {
+          "id": 39,
+          "nombre": "Juan",
+          "apellido": "González",
+          "dni": "12345678A",
+          "correo": "juan.gonzalez@example.com",
+          "estado": true
+        },
+        "fecha": "2024-01-18T11:17:58",
+        "total": 840.00,
+        "estado": true,
+        "conceptos": [
+          // Concepto objects...
+        ]
+      }
+    ],
+    "totalCount": 1
+  }
+  ```
+
+### 2. Get Sales
+
+- **Request**
+  - **Method:** `GET`
+  - **Endpoint:** `/ventas`
+
+- **Parameters:**
+  - `filter` (optional): Filter sales by client name, last name, or DNI.
+  - `skip` (optional): Number of records to skip.
+  - `limit` (optional): Maximum number of records to retrieve.
+  - `orderBy` (optional): Property by which to order the results (e.g., "date", "total").
+  - `desc` (optional): Set to true for descending order, false or omit for ascending order.
+
+- **Example**
+  ```http
+  GET /api/ventas?filter=Juan&skip=0&limit=10&orderBy=date&desc=true
+  ```
+
+- **Response**
+  ```json
+  {
+    "success": 1,
+    "message": "Ventas obtenidas correctamente",
+    "data": [
+      {
+        "id": 1,
+        "idCliente": 39,
+        "cliente": {
+          "id": 39,
+          "nombre": "Juan",
+          "apellido": "González",
+          "dni": "12345678A",
+          "correo": "juan.gonzalez@example.com",
+          "estado": true
+        },
+        "fecha": "2024-01-18T11:17:58",
+        "total": 840.00,
+        "estado": true,
+        "conceptos": [
+          // Concepto objects...
+        ]
+      },
+      // Additional sale objects...
+    ],
+    "totalCount": 100
+  }
+  ```
+
+### 3. Add Sale
+
+- **Request**
+  - **Method:** `POST`
+  - **Endpoint:** `/ventas`
+
+- **Body:**
+  - `idCliente` (required): ID of the client for the sale.
+  - `conceptos` (required): List of conceptos for the sale.
+
+- **Example**
+  ```http
+  POST /api/ventas
+  {
+    "idCliente": 39,
+    "conceptos": [
+      {
+        "idProducto": 3,
+        "cantidad": 1,
+        "precioUnitario": 250.00
+      },
+      // Additional concepto objects...
+    ]
+  }
+  ```
+
+- **Response**
+  ```json
+  {
+    "success": 1,
+    "message": "Venta creada correctamente",
+    "data": [
+      {
+        "id": 101,
+        "idCliente": 39,
+        "cliente": {
+          "id": 39,
+          "nombre": "Juan",
+          "apellido": "González",
+          "dni": "12345678A",
+          "correo": "juan.gonzalez@example.com",
+          "estado": true
+        },
+        "fecha": "2024-02-12T12:34:56",
+        "total": 1200.00,
+        "estado": true,
+        "conceptos": [
+          // Concepto objects...
+        ]
+      }
+    ],
+    "totalCount": 1
+  }
+  ```
+
+### 4. Update Sale
+
+- **Request**
+  - **Method:** `PATCH`
+  - **Endpoint:** `/ventas`
+
+- **Body:**
+  - `id` (required): ID of the sale to update.
+  - Additional fields (optional): Updated values for `idCliente`, `conceptos`.
+
+- **Example**
+  ```http
+  PATCH /api/ventas
+  {
+    "id": 1,
+    "conceptos": [
+      {
+        "idProducto": 3,
+        "cantidad": 2,
+        "precioUnitario": 300.00
+      },
+      // Additional updated concepto objects...
+    ]
+  }
+  ```
+
+- **Response**
+  ```json
+  {
+    "success": 1,
+    "message": "Venta actualizada correctamente",
+    "data": [
+      {
+        "id": 1,
+        "idCliente": 39,
+        "cliente": {
+          "id": 39,
+          "nombre": "Juan",
+          "apellido": "González",
+          "dni": "12345678A",
+          "correo": "juan.gonzalez@example.com",
+          "estado": true
+        },
+        "fecha
+
+": "2024-02-12T12:34:56",
+        "total": 900.00,
+        "estado": true,
+        "conceptos": [
+          // Updated concepto objects...
+        ]
+      }
+    ],
+    "totalCount": 1
+  }
+  ```
+
+### 5. Delete Sale
+
+- **Request**
+  - **Method:** `DELETE`
+  - **Endpoint:** `/ventas/{id}`
+
+- **Parameters:**
+  - `id` (required): ID of the sale to delete.
+
+- **Example**
+  ```http
+  DELETE /api/ventas/1
+  ```
+
+- **Response**
+  ```json
+  {
+    "success": 1,
+    "message": "Venta eliminada correctamente",
+    "data": null,
+    "totalCount": 1
+  }
+  ```
+
+### 6. Full Delete Sale
+
+- **Request**
+  - **Method:** `DELETE`
+  - **Endpoint:** `/ventas/full/{id}`
+
+- **Parameters:**
+  - `id` (required): ID of the sale to fully delete (including database removal).
+
+- **Example**
+  ```http
+  DELETE /api/ventas/full/1
+  ```
+
+- **Response**
+  ```json
+  {
+    "success": 1,
+    "message": "Venta eliminada correctamente",
+    "data": null,
+    "totalCount": 1
+  }
+  ```
+```
+
+
 ## Error Handling
 
 In case of an error, the response will include a descriptive error message.
