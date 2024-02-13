@@ -476,7 +476,6 @@ POST /api/usuarios/usuarios
 ```
 
 
-```markdown
 ## Ventas Endpoints
 
 ### 1. Get Sale by ID
@@ -729,7 +728,7 @@ POST /api/usuarios/usuarios
     "totalCount": 1
   }
   ```
-```
+
 
 
 ## Error Handling
