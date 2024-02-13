@@ -726,7 +726,200 @@ POST /api/usuarios/usuarios
     "totalCount": 1
   }
   ```
+## Productos Endpoints
 
+### 1. Get Product by ID
+
+- **Request**
+  - **Method:** `GET`
+  - **Endpoint:** `/productos/{id}`
+
+- **Parameters:**
+  - `id` (required): ID of the product.
+
+- **Example**
+  ```http
+  GET /api/productos/1
+  ```
+
+- **Response**
+  ```json
+  {
+    "success": 1,
+    "message": "Producto obtenido correctamente",
+    "data": [
+      {
+        "id": 1,
+        "nombre": "Producto A",
+        "descripcion": "Descripción del Producto A",
+        "precio": 120.00,
+        "estado": true
+      }
+    ],
+    "totalCount": 1
+  }
+  ```
+
+### 2. Get Products
+
+- **Request**
+  - **Method:** `GET`
+  - **Endpoint:** `/productos`
+
+- **Parameters:**
+  - `filter` (optional): Filter products by name or description.
+  - `skip` (optional): Number of records to skip.
+  - `limit` (optional): Maximum number of records to retrieve.
+  - `orderBy` (optional): Property by which to order the results (e.g., "name", "price").
+  - `desc` (optional): Set to true for descending order, false, or omit for ascending order.
+
+- **Example**
+  ```http
+  GET /api/productos?filter=Producto&skip=0&limit=10&orderBy=name&desc=true
+  ```
+
+- **Response**
+  ```json
+  {
+    "success": 1,
+    "message": "Productos obtenidos correctamente",
+    "data": [
+      {
+        "id": 1,
+        "nombre": "Producto A",
+        "descripcion": "Descripción del Producto A",
+        "precio": 120.00,
+        "estado": true
+      },
+      // Additional product objects...
+    ],
+    "totalCount": 100
+  }
+  ```
+
+### 3. Add Product
+
+- **Request**
+  - **Method:** `POST`
+  - **Endpoint:** `/productos`
+
+- **Body:**
+  - `nombre` (required): Name of the product.
+  - `descripcion` (required): Description of the product.
+  - `precio` (required): Price of the product.
+
+- **Example**
+  ```http
+  POST /api/productos
+  {
+    "nombre": "Nuevo Producto",
+    "descripcion": "Descripción del Nuevo Producto",
+    "precio": 99.99
+  }
+  ```
+
+- **Response**
+  ```json
+  {
+    "success": 1,
+    "message": "Producto creado correctamente",
+    "data": [
+      {
+        "id": 101,
+        "nombre": "Nuevo Producto",
+        "descripcion": "Descripción del Nuevo Producto",
+        "precio": 99.99,
+        "estado": true
+      }
+    ],
+    "totalCount": 1
+  }
+  ```
+
+### 4. Update Product
+
+- **Request**
+  - **Method:** `PATCH`
+  - **Endpoint:** `/productos`
+
+- **Body:**
+  - `id` (required): ID of the product to update.
+  - Additional fields (optional): Updated values for `nombre`, `descripcion`, `precio`.
+
+- **Example**
+  ```http
+  PATCH /api/productos
+  {
+    "id": 1,
+    "nombre": "Producto Actualizado"
+  }
+  ```
+
+- **Response**
+  ```json
+  {
+    "success": 1,
+    "message": "Producto actualizado correctamente",
+    "data": [
+      {
+        "id": 1,
+        "nombre": "Producto Actualizado",
+        "descripcion": "Descripción del Producto A",
+        "precio": 120.00,
+        "estado": true
+      }
+    ],
+    "totalCount": 1
+  }
+  ```
+
+### 5. Delete Product
+
+- **Request**
+  - **Method:** `DELETE`
+  - **Endpoint:** `/productos/{id}`
+
+- **Parameters:**
+  - `id` (required): ID of the product to delete.
+
+- **Example**
+  ```http
+  DELETE /api/productos/1
+  ```
+
+- **Response**
+  ```json
+  {
+    "success": 1,
+    "message": "Producto eliminado correctamente",
+    "data": null,
+    "totalCount": 1
+  }
+  ```
+
+### 6. Full Delete Product
+
+- **Request**
+  - **Method:** `DELETE`
+  - **Endpoint:** `/productos/full/{id}`
+
+- **Parameters:**
+  - `id` (required): ID of the product to fully delete (including database removal).
+
+- **Example**
+  ```http
+  DELETE /api/productos/full/1
+  ```
+
+- **Response**
+  ```json
+  {
+    "success": 1,
+    "message": "Producto eliminado correctamente",
+    "data": null,
+    "totalCount": 1
+  }
+  ```
 
 
 ## Error Handling
