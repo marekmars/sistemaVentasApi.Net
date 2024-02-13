@@ -667,9 +667,7 @@ POST /api/usuarios/usuarios
           "correo": "juan.gonzalez@example.com",
           "estado": true
         },
-        "fecha
-
-": "2024-02-12T12:34:56",
+        "fecha": "2024-02-12T12:34:56",
         "total": 900.00,
         "estado": true,
         "conceptos": [
