@@ -24,7 +24,7 @@ Base URL: `/api`
 #### Example
 
 ```http
-GET /api/clientes/clientes?filter=John&skip=0&limit=10&orderBy=name&desc=true
+GET /api/clientes?filter=John&skip=0&limit=10&orderBy=name&desc=true
 ```
 
 #### Response
@@ -60,7 +60,7 @@ GET /api/clientes/clientes?filter=John&skip=0&limit=10&orderBy=name&desc=true
 #### Example
 
 ```http
-GET /api/clientes/clientes/1
+GET /api/clientes/1
 ```
 
 #### Response
@@ -98,7 +98,7 @@ GET /api/clientes/clientes/1
 #### Example
 
 ```http
-POST /api/clientes/clientes
+POST /api/clientes
 {
   "nombre": "Jane",
   "apellido": "Doe",
@@ -140,7 +140,7 @@ POST /api/clientes/clientes
 #### Example
 
 ```http
-PATCH /api/clientes/clientes
+PATCH /api/clientes
 {
   "id": 1,
   "nombre": "UpdatedName"
@@ -179,7 +179,7 @@ PATCH /api/clientes/clientes
 #### Example
 
 ```http
-DELETE /api/clientes/clientes/1
+DELETE /api/clientes/1
 ```
 
 #### Response
@@ -205,7 +205,7 @@ DELETE /api/clientes/clientes/1
 #### Example
 
 ```http
-DELETE /api/clientes/clientes/full/1
+DELETE /api/clientes/full/1
 ```
 
 #### Response
@@ -282,7 +282,7 @@ POST /api/usuarios/login
 #### Example
 
 ```http
-GET /api/usuarios/usuarios?filter=John&skip=0&limit=10&orderBy=name&desc=true
+GET /api/usuarios?filter=John&skip=0&limit=10&orderBy=name&desc=true
 ```
 
 #### Response
@@ -325,7 +325,7 @@ GET /api/usuarios/usuarios?filter=John&skip=0&limit=10&orderBy=name&desc=true
 #### Example
 
 ```http
-GET /api/usuarios/usuarios/1
+GET /api/usuarios/1
 ```
 
 #### Response
@@ -365,7 +365,7 @@ GET /api/usuarios/usuarios/1
 #### Example
 
 ```http
-DELETE /api/usuarios/usuarios/1
+DELETE /api/usuarios/1
 ```
 
 #### Response
@@ -392,7 +392,7 @@ DELETE /api/usuarios/usuarios/1
 #### Example
 
 ```http
-PATCH /api/usuarios/usuarios
+PATCH /api/usuarios
 {
   "id": 1,
   "nombre": "UpdatedName"
@@ -440,7 +440,7 @@ PATCH /api/usuarios/usuarios
 #### Example
 
 ```http
-POST /api/usuarios/usuarios
+POST /api/usuarios
 {
   "nombre": "Jane",
   "apellido": "Doe",
