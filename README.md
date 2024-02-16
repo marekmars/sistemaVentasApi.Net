@@ -275,10 +275,10 @@ This will filter clients with the last name "Doe" and order the results by the f
 | state            | Byte       | La URL de la imagen del producto.          |
 
 ## Validations
-- Name: Minimum length of 3 characters.
-- LastName: Minimum length of 3 characters.
-- IdCard: Must have 8 digits.
-- Mail: Valid email address. Must not exist in the database for other clients with a different ID and a non-zero state.
+- **Name:** Minimum length of 3 characters.
+- **LastName:** Minimum length of 3 characters.
+- **IdCard:** Must have 8 digits.
+- **Mail:** Valid email address. Must not exist in the database for other clients with a different ID and a non-zero state.
 
 
 # Users Endpoints
@@ -597,7 +597,7 @@ This will skip the first 10 records and retrieve the next 5 records.
 ```markdown
 GET /api/users?filter=Doe&orderBy=name&desc=1
 ```
-This will filter clients with the last name "Doe" and order the results by the first name in descending order.
+This will filter users with the last name "Doe" and order the results by the first name in descending order.
 
 ## Data Model
 
@@ -614,12 +614,12 @@ This will filter clients with the last name "Doe" and order the results by the f
 
 
 ## Validations
-IdRole: Must be a positive integer and exist in the database.
-Mail: Valid email address. Must not exist in the database for other users with a different ID and a state of 1.
-Password: Minimum length of 6 characters.
-Name: Minimum length of 3 characters.
-LastName: Minimum length of 3 characters.
-IdCard: Must have 8 digits.
+- **IdRole:** Must be a positive integer and exist in the database.
+- **Mail:** Valid email address. Must not exist in the database for other users with a different ID and a state of 1.
+- **Password:** Minimum length of 6 characters.
+- **Name:** Minimum length of 3 characters.
+- **LastName:** Minimum length of 3 characters.
+- **IdCard:** Must have 8 digits.
 
 # Sales Endpoints
 
@@ -937,13 +937,13 @@ This will filter sales with the cient last name "Doe" and order the results by t
 
 ### Validations
 
-- `idClient`: Must be a positive integer and exist in the database.
-- `concepts`: Must have at least one concept with valid data.
-- `quantity`: Must be a positive integer.
-- `unitaryPrice`: Must be a positive decimal.
-- `import`: Must be a positive decimal.
-- `idProduct`: Must be a positive integer, exist in the database and have the requested stock.
-- `state`: Must be a byte value.
+- **idClient:** Must be a positive integer and exist in the database.
+- **concepts:** Must have at least one concept with valid data.
+- **quantity:** Must be a positive integer.
+- **unitaryPrice:** Must be a positive decimal.
+- **import:** Must be a positive decimal.
+- **idProduct:** Must be a positive integer, exist in the database and have the requested stock.
+- **state:** Must be a byte value.
 
 
 
@@ -1161,6 +1161,62 @@ This will filter sales with the cient last name "Doe" and order the results by t
     "totalCount": 1
   }
   ```
+## Pagination and Filtering in Get Products
+
+When using the `Get Products` endpoint, you can apply pagination and filtering to retrieve specific sets of data.
+
+### Pagination
+
+- Use the `skip` parameter to skip a certain number of records.
+- Use the `limit` parameter to set the maximum number of records to retrieve.
+
+**Example:**
+```markdown
+GET /api/products?skip=10&limit=5
+```
+This will skip the first 10 records and retrieve the next 5 records.
+
+### Filtering
+
+- Use the `filter` parameter to filter users by name.
+- Use the `min` parameter to add a min price value.
+- Use the `max` parameter to add a max price value.
+- Use the `orderBy` parameter to specify the property by which to order the results.
+- Use the `desc` parameter to set the order as descending (true) or ascending (false).
+
+**Example:**
+```markdown
+GET /api/products?filter=potatos&orderBy=name&min=150&max=500&orderBy=price&desc=1
+```
+This will filter products with the word potato included in the name, between 150 and 500 and order the results by the price in descending order.
+
+## Data Model
+
+| Atribute         | Type       | Description                                |
+|------------------|------------|--------------------------------------------|
+| id               | Long       | ID of the product.                         |
+| name             | String     | Name of the product.                       |
+| description      | String     | La descripción of the product.             |
+| unitary_price    | Decimal    | Price of the product.                      |
+| cost             | Decimal    | Cost of the product.                       |
+| stock            | Int        | Stock quantity of the product.             |
+| state            | Byte       | State of the product                       |
+| image_url        | String     | Image URL of the product.                  |
+
+
+## Validations
+
+- **IdRole:** Must be a positive integer and exist in the database.
+
+- **Mail:** Valid email address. Must not exist in the database for other users with a different ID and a state of 1.
+
+- **Password:** Minimum length of 6 characters.
+
+- **Name:** Minimum length of 3 characters.
+
+- **LastName:** Minimum length of 3 characters.
+
+- **IdCard:** Must have 8 digits.
 
 # Error Handling
 
