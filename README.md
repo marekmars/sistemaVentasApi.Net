@@ -631,7 +631,7 @@ This will filter users with the last name "Doe" and order the results by the fir
 ## 1. Get Roles
 ### Request
 - **Method:** `GET`
-- **Endpoint:** `/clients`
+- **Endpoint:** `/roles`
 ### Example
 ``` 
 http
@@ -651,7 +651,7 @@ GET /api/roles
     },
     {
       "id": 2,
-      "name": "Standard User"
+      "name": "Seller"
     },
     // Additional role objects...
   ],
@@ -660,7 +660,7 @@ GET /api/roles
 ```
 ## Data Model
 
-| Atribute         | Type       | Description                                |
+| Attribute         | Type       | Description                                |
 |------------------|------------|--------------------------------------------|
 | id               | Long       | The id of the role.                        |
 | name             | String     | The name of the role.                      |
@@ -946,7 +946,7 @@ This will skip the first 10 records and retrieve the next 5 records.
 
 ### Filtering
 
-- Use the `filter` parameter to filter users by cleint name, client last name, date, or product name.
+- Use the `filter` parameter to filter users by client name, client last name, date, or product name.
 - Use the `orderBy` parameter to specify the property by which to order the results (date, client name or last name and total price).
 - Use the `desc` parameter to set the order as descending (1) for descending order.
 
@@ -954,7 +954,7 @@ This will skip the first 10 records and retrieve the next 5 records.
 ```markdown
 GET /api/sales?filter=Doe&orderBy=date&desc=1
 ```
-This will filter sales with the cient last name "Doe" and order the results by the date in descending order.
+This will filter sales with the client last name "Doe" and order the results by the date in descending order.
 
 ## Data Model
 
@@ -1044,7 +1044,7 @@ This will filter sales with the cient last name "Doe" and order the results by t
 
 - **Example**
   ```http
-  GET /api/products?filter=Product&skip=0&limit=10&orderBy=name&desc=true
+  GET /api/products?filter=potatoes&skip=0&limit=10&orderBy=name&desc=true
   ```
 
 - **Response**
@@ -1231,13 +1231,13 @@ This will skip the first 10 records and retrieve the next 5 records.
 
 **Example:**
 ```markdown
-GET /api/products?filter=potatos&orderBy=name&min=150&max=500&orderBy=price&desc=1
+GET /api/products?filter=potatoes&orderBy=name&min=150&max=500&orderBy=price&desc=1
 ```
 This will filter products with the word potato included in the name, between 150 and 500 and order the results by the price in descending order.
 
 ## Data Model
 
-| Atribute         | Type       | Description                                |
+| Attribute         | Type       | Description                                |
 |------------------|------------|--------------------------------------------|
 | id               | Long       | ID of the product.                         |
 | name             | String     | Name of the product.                       |
