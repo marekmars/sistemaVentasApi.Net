@@ -284,6 +284,20 @@ This will filter clients with the last name "Doe" and order the results by the f
 # Users Endpoints
 
 ## 1. User Authentication
+- **Admin Role:**
+  - Admins have full access to all user-related endpoints, including adding, updating, and deleting users.
+
+- **Employee Role:**
+  - Employees have restricted access and can only retrieve information about users but cannot perform actions like adding, updating, or deleting users.
+
+- If the email and password do not match, the server will respond with a 401 error.
+
+- If the email and password match, the server will respond with a 200 OK and include the bearer token and the user including the role.
+
+- The bearer token is a JWT that contains user information and has a duration of 150 hours.
+
+- The bearer token must be included in the header of all requests.
+
 
 ### Request
 
@@ -546,19 +560,19 @@ DELETE /api/users/1
 }
 ```
 
-## 7. Full Delete Client
+## 7. Full Delete User
 
 ### Request
 
 - **Method:** `DELETE`
 - **Endpoint:** `/clients/fulldelete/{id}`
 - **Parameters:**
-  - `id` (required): ID of the client to fully delete (including database removal).
+  - `id` (required): ID of the user to fully delete (including database removal).
 
 ### Example
 
 ```http
-DELETE /api/clients/fulldelete/1
+DELETE /api/users/fulldelete/1
 ```
 
 ### Response
@@ -566,7 +580,7 @@ DELETE /api/clients/fulldelete/1
 ```json
 {
   "success": 1,
-  "message": "Cliente eliminado correctamente",
+  "message": "Usuario eliminado correctamente",
   "data": null,
   "totalCount": 1
 }
@@ -601,16 +615,16 @@ This will filter users with the last name "Doe" and order the results by the fir
 
 ## Data Model
 
-| Atribute         | Type       | Description                                |
-|------------------|------------|--------------------------------------------|
-| id               | Long       | El ID del producto.                        |
-| name             | String     | El name del producto.                    |
-| last_name        | String     | La descripción del producto.               |
-| id_card          | String     | El price del producto.                    |
-| mail             | String     | La cantidad de stock del producto.         |
-| id_role          | Long       | La cantidad de stock del producto.         |
-| password         | String     | La cantidad de stock del producto.         |
-| state            | Byte       | La URL de la imagen del producto.          |
+| Attribute        | Type       | Description                            |
+|-------------------|------------|----------------------------------------|
+| id                | Long       | The ID of the user.                 |
+| name              | String     | The name of the user.               |
+| id_role           | Long       | The id role of the user |
+| password          | String     | the password of the user |
+| last_name         | String     | The last name of the user.        |
+| id_card           | String     | The identification number of the user.              |
+| mail              | String     | The email of the user. |
+| state             | Byte       | The state of the user.          |
 
 
 ## Validations
@@ -620,6 +634,45 @@ This will filter users with the last name "Doe" and order the results by the fir
 - **Name:** Minimum length of 3 characters.
 - **LastName:** Minimum length of 3 characters.
 - **IdCard:** Must have 8 digits.
+
+# Roles Endpoints
+## 1. Get Roles
+### Request
+- **Method:** `GET`
+- **Endpoint:** `/clients`
+### Example
+``` 
+http
+GET /api/roles
+
+```
+### Response
+``` json
+
+{
+  "success": 1,
+  "message": "Roles retrieved successfully",
+  "data": [
+    {
+      "id": 1,
+      "name": "Admin"
+    },
+    {
+      "id": 2,
+      "name": "Standard User"
+    },
+    // Additional role objects...
+  ],
+  "totalCount": 5
+}
+```
+## Data Model
+
+| Atribute         | Type       | Description                                |
+|------------------|------------|--------------------------------------------|
+| id               | Long       | The id of the role.                        |
+| name             | String     | The name of the role.                      |
+
 
 # Sales Endpoints
 
@@ -1231,6 +1284,5 @@ In case of an error, the response will include a descriptive error message.
 }
 ```
 
----
 
 **Note:** Replace placeholders such as `{id}` with actual values in your requests.
