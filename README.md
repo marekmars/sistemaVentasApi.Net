@@ -325,17 +325,9 @@ POST /api/users/login
   "message": "Bienvenido admin@example.com",
   "data": [
     {
-      "id": 1,
-      "idRole": 1,
-      "role": {
-        "id": 1,
-        "name": "Admin"
-      },
-      "mail": "admin@example.com",
-      "name": "Admin",
-      "lastname": "User",
-      "state": 1,
-      "idcard": "1234567890"
+       "correo": "admin@example.com",
+       "rol": "Admin",
+       "token": "qwewqdwqe6w78qewq78q8we892NJK98sanKLJOI0lkjKLJGYUGVI98797JKLHJKH79jki7"
     }
   ],
   "totalCount": 1
