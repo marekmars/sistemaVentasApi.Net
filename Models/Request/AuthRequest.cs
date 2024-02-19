@@ -11,6 +11,6 @@ namespace Web_Service_.Net_Core.Models.Request
         [Required]
         public string? User {get;set;}
         [Required] 
-        public string? Clave {get;set;}
+        public string? Password {get;set;}
     }
 }

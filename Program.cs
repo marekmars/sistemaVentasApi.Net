@@ -32,12 +32,12 @@ builder.Services.AddCors(options =>
     });
 });
 
-builder.Services.AddScoped<IUsuarioService, UsuarioService>();
-builder.Services.AddScoped<IVentaService, VentaService>();
-builder.Services.AddScoped<IProductoService, ProductoService>();
-builder.Services.AddScoped<IClienteService, ClienteService>();
-builder.Services.AddScoped<IConceptoService, ConceptoService>();
-builder.Services.AddScoped<IRolService, RolService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ISaleService, SaleService>();
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IClientService, ClientService>();
+builder.Services.AddScoped<IConceptService, ConceptService>();
+builder.Services.AddScoped<IRoleService, RoleService>();
 
 var appSettingsSection = configuration.GetSection("AppSettings");
 builder.Services.Configure<AppSetting>(appSettingsSection);
@@ -86,13 +86,17 @@ builder.Services.AddAuthorizationBuilder()
          .AddPolicy("Empleado", policy => policy.RequireRole("Empleado", "Administrador"))
          .AddPolicy("Administrador", policy => policy.RequireRole("Administrador"));
 
+// builder.Services.AddDbContext<DBContext>(
+//     options => options.UseMySql(
+//         configuration["AppSettings:ConnectionStrings:MySql"]
+//         , Microsoft.EntityFrameworkCore.ServerVersion.Parse("10.4.32-mariadb")
+//     )
+// );
 builder.Services.AddDbContext<DBContext>(
-    options => options.UseMySql(
-        configuration["AppSettings:ConnectionStrings:MySql"]
-        , Microsoft.EntityFrameworkCore.ServerVersion.Parse("10.4.32-mariadb")
+    options => options.UseSqlServer(
+        configuration["AppSettings:ConnectionStrings:Some"]
     )
 );
-
 
 var app = builder.Build();
 
