@@ -85,7 +85,7 @@ namespace Web_Service_.Net_Core.Controllers
         }
 
         [HttpPatch]
-        [Authorize(Roles = "Administrador")]
+        [Authorize(Roles = "Admin")]
 
         public IActionResult Udpate(ProductRequest oCliente)
         {
@@ -108,7 +108,7 @@ namespace Web_Service_.Net_Core.Controllers
         }
 
         [HttpDelete("{Id}")]
-        [Authorize(Roles = "Administrador")]
+        [Authorize(Roles = "Admin")]
         public IActionResult Delete(long Id)
         {
             ApiResponse<Product> oResponse = new ApiResponse<Product>();
@@ -129,7 +129,7 @@ namespace Web_Service_.Net_Core.Controllers
         }
 
         [HttpDelete("fulldelete/{Id}")]
-        [Authorize(Roles = "Administrador")]
+        [Authorize(Roles = "Admin")]
         public IActionResult FullDeleteProducto(long Id)
         {
             ApiResponse<Product> oResponse = new ApiResponse<Product>();

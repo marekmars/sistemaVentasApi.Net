@@ -82,7 +82,7 @@ namespace Web_Service_.Net_Core.Controllers
         }
 
         [HttpPatch]
-        [Authorize(Roles = "Administrador")]
+        [Authorize(Roles = "Admin")]
 
         public IActionResult Udpate(ClientRequest oCliente)
         {
@@ -105,7 +105,7 @@ namespace Web_Service_.Net_Core.Controllers
         }
 
         [HttpDelete("{Id}")]
-        [Authorize(Roles = "Administrador")]
+        [Authorize(Roles = "Admin")]
         public IActionResult Delete(long Id)
         {
             ApiResponse<Client> oResponse = new ApiResponse<Client>();
@@ -126,7 +126,7 @@ namespace Web_Service_.Net_Core.Controllers
         }
 
         [HttpGet("check")]
-        [Authorize(Roles = "Administrador")]
+        [Authorize(Roles = "Admin")]
         public IActionResult IsEmailValid([FromForm] string Correo)
         {
             ApiResponse<Client> oResponse = new ApiResponse<Client>();
@@ -147,7 +147,7 @@ namespace Web_Service_.Net_Core.Controllers
         }
 
         [HttpDelete("fulldelete/{Id}")]
-        [Authorize(Roles = "Administrador")]
+        [Authorize(Roles = "Admin")]
         public IActionResult FullDeleteClient(long Id)
         {
             ApiResponse<Client> oResponse = new ApiResponse<Client>();

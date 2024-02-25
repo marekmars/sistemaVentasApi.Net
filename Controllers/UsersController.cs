@@ -63,7 +63,7 @@ namespace Web_Service_.Net_Core.Controllers
         /// <summary>
         /// Retrieve a list of users based on the provided query parameters
         /// </summary>
-        [Authorize(Roles = "Administrador")]
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public IActionResult Get([FromQuery] QueryParameters oQueryParameters)
         {
@@ -89,7 +89,7 @@ namespace Web_Service_.Net_Core.Controllers
         /// </summary>
         /// <param name="id">The ID of the user</param>
         /// <returns>The user information as ApiResponse</returns>
-        [Authorize(Roles = "Administrador")]
+        [Authorize(Roles = "Admin")]
         [HttpGet("{id}")]
         public IActionResult Get(long id)
         {
@@ -113,7 +113,7 @@ namespace Web_Service_.Net_Core.Controllers
 
 
         // Specifies that only users in the "Administrador" role are allowed to access this endpoint
-        [Authorize(Roles = "Administrador")]
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{Id}")]
         /// <summary>
         /// Deletes a user by Id
@@ -150,7 +150,7 @@ namespace Web_Service_.Net_Core.Controllers
         /// <param name="oUserRequest">The user information to be updated</param>
         /// <returns>Returns the result of the update operation</returns>
         [HttpPatch]
-        [Authorize(Roles = "Administrador")]
+        [Authorize(Roles = "Admin")]
         public IActionResult Update(UserRequest oUserRequest)
         {
             ApiResponse<User> oApiResponse = new ApiResponse<User>();
@@ -176,7 +176,7 @@ namespace Web_Service_.Net_Core.Controllers
         /// <param name="oUserRequest">The request object for the new user.</param>
         /// <returns>Returns the result of adding the new user.</returns>
         [HttpPost]
-        [Authorize(Roles = "Administrador")]
+        [Authorize(Roles = "Admin")]
         public IActionResult Add(UserRequest oUserRequest)
         {
             ApiResponse<User> oApiResponse = new();
@@ -198,7 +198,7 @@ namespace Web_Service_.Net_Core.Controllers
 
 
         [HttpGet("check")]
-        [Authorize(Roles = "Administrador")]
+        [Authorize(Roles = "Admin")]
         public IActionResult IsEmailValid([FromForm] string Mail)
         {
             ApiResponse<User> oResponse = new ApiResponse<User>();
@@ -219,7 +219,7 @@ namespace Web_Service_.Net_Core.Controllers
         }
 
         [HttpDelete("fulldelete/{Id}")]
-        [Authorize(Roles = "Administrador")]
+        [Authorize(Roles = "Admin")]
         public IActionResult FullDeleteUser(long Id)
         {
             ApiResponse<User> oResponse = new ApiResponse<User>();

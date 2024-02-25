@@ -2,7 +2,6 @@ using System.Text;
 using Microsoft.EntityFrameworkCore;
 // using Web_Service_.Net_Core.Models;
 using Microsoft.Extensions.FileProviders;
-using Web_Service_.Net_Core.Models.Common;
 using Web_Service_.Net_Core.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -39,13 +38,6 @@ builder.Services.AddScoped<IClientService, ClientService>();
 builder.Services.AddScoped<IConceptService, ConceptService>();
 builder.Services.AddScoped<IRoleService, RoleService>();
 
-var appSettingsSection = configuration.GetSection("AppSettings");
-builder.Services.Configure<AppSetting>(appSettingsSection);
-
-//configuracion JWT
-var appSettings = appSettingsSection.Get<AppSetting>();
-var key = Encoding.ASCII.GetBytes(appSettings.Secret);
-
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme; // Esquema JWT como predeterminado
@@ -60,7 +52,7 @@ builder.Services.AddAuthentication(options =>
         ValidateAudience = false,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(key)
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(configuration["Secret"]))
     };
     options.Events = new JwtBearerEvents
     {
@@ -90,8 +82,8 @@ if (builder.Environment.IsDevelopment())
 {
     builder.Services.AddDbContext<DataContext>(
         options => options.UseMySql(
-            configuration["AppSettings:ConnectionStrings:MySql"],
-           ServerVersion.AutoDetect(configuration["AppSettings:ConnectionStrings:MySql"])
+            configuration["MySqlConnection"],
+           ServerVersion.AutoDetect(configuration["MySqlConnection"])
         )
     );
 }
@@ -99,7 +91,7 @@ else
 {
     builder.Services.AddDbContext<DataContext>(
     options => options.UseSqlServer(
-        configuration["AppSettings:ConnectionStrings:Some"]
+        configuration["SomeConnection"]
     )
 );
 

@@ -14,7 +14,7 @@ using Microsoft.IdentityModel.Tokens;
 using Web_Service_.Net_Core.Controllers;
 using Web_Service_.Net_Core.Models;
 using Web_Service_.Net_Core.Models.ApiResponse;
-using Web_Service_.Net_Core.Models.Common;
+
 using Web_Service_.Net_Core.Models.Request;
 using Web_Service_.Net_Core.Models.Response;
 using Web_Service_.Net_Core.Models.Tools;
@@ -24,14 +24,15 @@ namespace Web_Service_.Net_Core.Services
 {
 
     public class UserService : IUserService
+    
     {
-        private readonly AppSetting _appSettings;
+        private readonly IConfiguration _configuration;
         private readonly DataContext _context;
 
 
-        public UserService(IOptions<AppSetting> appSetings, DataContext dBContext)
+        public UserService(IConfiguration configuration, DataContext dBContext)
         {
-            _appSettings = appSetings.Value;
+           _configuration = configuration;
             _context = dBContext;
         }
         public UserResponse Authenticate(AuthRequest oAuthRequest)
@@ -61,7 +62,7 @@ namespace Web_Service_.Net_Core.Services
         {
             if (usuario == null) throw new("User no encontrado");
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
+            var key = Encoding.ASCII.GetBytes(_configuration["Secret"]);
             string? rol = GetRole(usuario);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
