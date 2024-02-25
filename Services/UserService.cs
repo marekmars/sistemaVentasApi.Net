@@ -26,10 +26,10 @@ namespace Web_Service_.Net_Core.Services
     public class UserService : IUserService
     {
         private readonly AppSetting _appSettings;
-        private readonly DBContext _context;
+        private readonly DataContext _context;
 
 
-        public UserService(IOptions<AppSetting> appSetings, DBContext dBContext)
+        public UserService(IOptions<AppSetting> appSetings, DataContext dBContext)
         {
             _appSettings = appSetings.Value;
             _context = dBContext;

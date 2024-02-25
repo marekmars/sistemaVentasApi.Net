@@ -12,8 +12,8 @@ namespace Web_Service_.Net_Core.Services
 {
     public class ProductService : IProductService
     {
-        private readonly DBContext _context;
-        public ProductService(DBContext dBContext)
+        private readonly DataContext _context;
+        public ProductService(DataContext dBContext)
         {
             _context = dBContext;
         }
@@ -26,7 +26,7 @@ namespace Web_Service_.Net_Core.Services
                 UnitaryPrice = oProductRequest.UnitaryPrice,
                 Cost = oProductRequest.Cost,
                 Stock = oProductRequest.Stock,
-                State = true
+                State = 1
             };
 
             _context.Add(oProduct);
@@ -44,10 +44,10 @@ namespace Web_Service_.Net_Core.Services
         public ApiResponse<Product> DeleteProduct(long Id)
         {
             Product? oProduct = _context.Products
-                                .Where(p => p.Id == Id && p.State == true)
+                                .Where(p => p.Id == Id && p.State == 1)
                                 .FirstOrDefault()
                                 ?? throw new Exception("No se encontro un producto activo con ese ID");
-            oProduct.State = false;
+            oProduct.State = 0;
             _context.Entry(oProduct).State = EntityState.Modified;
             _context.SaveChanges();
             return new ApiResponse<Product>
@@ -77,7 +77,7 @@ namespace Web_Service_.Net_Core.Services
         public ApiResponse<Product> GetProduct(long Id)
         {
             Product? oProduct = _context.Products
-                              .Where(p => p.Id == Id && p.State == true)
+                              .Where(p => p.Id == Id && p.State == 1)
                               .FirstOrDefault()
                               ?? throw new Exception("No se encontro un producto activo con ese ID");
 
@@ -99,7 +99,7 @@ namespace Web_Service_.Net_Core.Services
             var totalElements = _context.Products.Count();
 
             // Add a condition to filter clients with State equal to 1
-            query = query.Where(p => p.State == true);
+            query = query.Where(p => p.State == 1);
 
             // Add an OrderBy clause to make the query predictable
             if (!string.IsNullOrEmpty(queryParameters.OrderBy))
@@ -168,7 +168,7 @@ namespace Web_Service_.Net_Core.Services
         public ApiResponse<Product> UpdateProduct(ProductRequest oProductRequest)
         {
             Product? oProduct = _context.Products
-                                          .Where(c => c.Id == oProductRequest.Id && c.State == true)
+                                          .Where(c => c.Id == oProductRequest.Id && c.State == 1)
                                           .FirstOrDefault()
                                           ?? throw new Exception("No se encontro un cliente activo con ese ID");
 

@@ -10,7 +10,7 @@ namespace Web_Service_.Net_Core.Models.Request
         [Key]
         public long Id { get; set; }
         [Required(ErrorMessage = "El rol es requerido")]
-        [Range(1, int.MaxValue, ErrorMessage = "El rol es requerido")]
+        [Range(1, int.MaxValue, ErrorMessage = "El rol tiene que ser mayor a 0")]
         [RoleValid(ErrorMessage = "El rol no existe")]
         public int IdRole { get; set; }
         [ForeignKey("IdRole")]
@@ -36,37 +36,35 @@ namespace Web_Service_.Net_Core.Models.Request
             protected override ValidationResult IsValid(object value, ValidationContext validationContext)
             {
                 string newMail = value + "";
-                using (DBContext db = new())
+                var oUserRequest = (UserRequest)validationContext.ObjectInstance;
+                var context = validationContext.GetService<DataContext>();
+
+                if (context.Users.Any(x => x.Mail == newMail && x.Id != oUserRequest.Id && x.State == 1))
                 {
-                    var oUserRequest = (UserRequest)validationContext.ObjectInstance;
-
-                    if (db.Users.Any(x => x.Mail == newMail && x.Id != oUserRequest.Id && x.State==1))
-                    {
-                        return new ValidationResult(ErrorMessage);
-                    }
-
-                    return ValidationResult.Success;
+                    return new ValidationResult(ErrorMessage);
                 }
+
+                return ValidationResult.Success;
+
             }
         }
 
-        private class RoleValid() : ValidationAttribute
+        private class RoleValid : ValidationAttribute
         {
             protected override ValidationResult IsValid(object value, ValidationContext validationContext)
             {
-                int newRole = (int) value ;
-                using (DBContext db = new())
+                int newRole = (int)value;
+                var context = validationContext.GetService<DataContext>();
+
+                if (!context.Roles.Any(r => r.Id == newRole)) 
                 {
-
-                    if (db.Roles.Any(r=> r.Id != newRole))
-                    {
-                        return new ValidationResult(ErrorMessage);
-                    }
-
-                    return ValidationResult.Success;
+                    return new ValidationResult(ErrorMessage);
                 }
+
+                return ValidationResult.Success;
             }
         }
+
         #endregion
     }
 }

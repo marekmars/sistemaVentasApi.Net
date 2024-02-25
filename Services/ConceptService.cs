@@ -9,8 +9,8 @@ namespace Web_Service_.Net_Core.Services
 {
     public class ConceptService : IConceptService
     {
-        private DBContext _context;
-        public ConceptService(DBContext dBContext)
+        private DataContext _context;
+        public ConceptService(DataContext dBContext)
         {
             _context = dBContext;
         }

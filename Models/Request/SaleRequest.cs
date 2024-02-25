@@ -21,7 +21,7 @@ namespace Web_Service_.Net_Core.Models.Request
         public List<ConceptRequest> Concepts { get; set; } = [];
         public DateTime? Date { get; set; }
         public decimal? Total { get; set; }
-    
+
     }
     public class ConceptRequest
     {
@@ -44,16 +44,19 @@ namespace Web_Service_.Net_Core.Models.Request
     #region Validaciones
     public class ExisteCliente : ValidationAttribute
     {
-        public override bool IsValid(object value)
+        protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
             long IdClient = (long)value;
-            using (DBContext db = new())
-            {
-                if (db.Clients.Find(IdClient) == null) return false;
-            };
+            var context = validationContext.GetService<DataContext>();
 
-            return true;
+            if (context.Clients.Find(IdClient) == null)
+            {
+                return new ValidationResult(ErrorMessage);
+            }
+
+            return ValidationResult.Success;
         }
+
     }
     public class ExisteProducto : ValidationAttribute
     {
@@ -61,15 +64,13 @@ namespace Web_Service_.Net_Core.Models.Request
         {
             long idProduct = (long)value;
             var oConceptRequest = (ConceptRequest)validationContext.ObjectInstance;
-            using (DBContext db = new())
-            {
-                Product? product = db.Products.Find(idProduct);
-                if (product == null || product.State == false || (product.Id == oConceptRequest.IdProduct && product.Stock < oConceptRequest.Quantity)) return new ValidationResult(ErrorMessage);
-
-            };
+            var context = validationContext.GetService<DataContext>();
+            Product? product = context.Products.Find(idProduct);
+            if (product == null || product.State == 0 || (product.Id == oConceptRequest.IdProduct && product.Stock < oConceptRequest.Quantity)) return new ValidationResult(ErrorMessage);
 
             return ValidationResult.Success;
         }
+        
     }
 
     #endregion

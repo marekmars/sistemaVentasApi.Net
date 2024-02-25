@@ -23,5 +23,8 @@ namespace Web_Service_.Net_Core.Models.Request
         [RegularExpression(@"^[0-9]\d*$", ErrorMessage = "El stock debe ser un número entero no negativo")]
         public int Stock { get; set; }
 
+        public string? ImageUrl { get; set; }
+        public string? Description { get; set; }
+
     }
 }

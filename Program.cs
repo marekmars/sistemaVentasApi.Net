@@ -86,17 +86,38 @@ builder.Services.AddAuthorizationBuilder()
          .AddPolicy("Empleado", policy => policy.RequireRole("Empleado", "Administrador"))
          .AddPolicy("Administrador", policy => policy.RequireRole("Administrador"));
 
-// builder.Services.AddDbContext<DBContext>(
-//     options => options.UseMySql(
-//         configuration["AppSettings:ConnectionStrings:MySql"]
-//         , Microsoft.EntityFrameworkCore.ServerVersion.Parse("10.4.32-mariadb")
-//     )
-// );
-builder.Services.AddDbContext<DBContext>(
+if (builder.Environment.IsDevelopment())
+{
+    builder.Services.AddDbContext<DataContext>(
+        options => options.UseMySql(
+            configuration["AppSettings:ConnectionStrings:MySql"],
+           ServerVersion.AutoDetect(configuration["AppSettings:ConnectionStrings:MySql"])
+        )
+    );
+}
+else
+{
+    builder.Services.AddDbContext<DataContext>(
     options => options.UseSqlServer(
         configuration["AppSettings:ConnectionStrings:Some"]
     )
 );
+
+}
+
+
+// builder.Services.AddDbContext<DBContext>(
+//     options => options.UseMySql(
+//         configuration["AppSettings:ConnectionStrings:MySql"],
+//         , Microsoft.EntityFrameworkCore.ServerVersion.Parse("10.4.32-mariadb")
+//     )
+// );
+
+// builder.Services.AddDbContext<DBContext>(
+//     options => options.UseSqlServer(
+//         configuration["AppSettings:ConnectionStrings:Some"]
+//     )
+// );
 
 var app = builder.Build();
 
@@ -105,6 +126,10 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+}
+else
+{
+
 }
 app.UseCors(myCorsPolicy);
 app.UseHttpsRedirection();

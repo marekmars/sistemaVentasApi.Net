@@ -15,8 +15,10 @@ public partial class Product
 
     public int Stock { get; set; }
 
-    public bool State { get; set; }
+    public byte State { get; set; }
 
-    public string ImageUrl {get;set;}=null!;
+    public string? ImageUrl {get;set;}
+
+    public string? Description { get; set; }
 
 }

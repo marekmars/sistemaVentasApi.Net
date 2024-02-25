@@ -5,14 +5,9 @@ using Pomelo.EntityFrameworkCore.MySql.Scaffolding.Internal;
 
 namespace Web_Service_.Net_Core.Models;
 
-public partial class DBContext : DbContext
+public partial class DataContext : DbContext
 {
-
-    public DBContext()
-    {
-    }
-
-    public DBContext(DbContextOptions<DBContext> options)
+    public DataContext(DbContextOptions<DataContext> options)
         : base(options)
     {
     }
@@ -31,14 +26,7 @@ public partial class DBContext : DbContext
 
     public virtual DbSet<User> Users { get; set; }
 
-    //     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    // #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-    //         => optionsBuilder.UseMySql("server=localhost;database=sistema_ventas;user=root", Microsoft.EntityFrameworkCore.ServerVersion.Parse("10.4.32-mariadb"));
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-            => optionsBuilder.UseSqlServer(
-        "Data Source=sistema_venta.mssql.somee.com;Initial Catalog=sistema_venta;user id=heissen_SQLLogin_1;pwd=ytnycsz17t; TrustServerCertificate=True;"
-    );
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

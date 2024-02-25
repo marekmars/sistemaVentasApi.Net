@@ -9,8 +9,8 @@ namespace Web_Service_.Net_Core.Services
 
     public class ClientService : IClientService
     {
-        private readonly DBContext _context;
-        public ClientService(DBContext? context)
+        private readonly DataContext _context;
+        public ClientService(DataContext? context)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }

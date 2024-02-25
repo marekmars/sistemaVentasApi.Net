@@ -13,65 +13,126 @@ namespace Web_Service_.Net_Core.Services
 {
     public class SaleService : ISaleService
     {
-        public readonly DBContext _context;
+        public readonly DataContext _context;
 
-        public SaleService(DBContext dBContext)
+        public SaleService(DataContext dBContext)
         {
             _context = dBContext;
-        }
 
+        }
         public ApiResponse<Sale> AddSale(SaleRequest oSaleRequest)
         {
-            using (var dbTransaction = _context.Database.BeginTransaction())
+            
+            using var dbTransaction = _context.Database.BeginTransaction();
+
+            try
             {
-                try
+                var venta = new Sale
                 {
-                    var venta = new Sale
+                    Total = oSaleRequest.Concepts.Sum(x => x.Quantity * x.UnitaryPrice),
+                    Date = DateTime.Now,
+                    IdClient = oSaleRequest.IdClient,
+                    State = 1
+                };
+                _context.Sales.Add(venta);
+                _context.SaveChanges();
+
+                dbTransaction.CreateSavepoint("BeforeAddingConcepts");
+
+                foreach (var item in oSaleRequest.Concepts)
+                {
+                    Concept concept = new()
                     {
-                        Total = oSaleRequest.Concepts.Sum(x => x.Quantity * x.UnitaryPrice),
-                        Date = DateTime.Now,
-                        IdClient = oSaleRequest.IdClient,
+                        IdSale = venta.Id,
+                        IdProduct = item.IdProduct,
+                        Quantity = item.Quantity,
+                        UnitaryPrice = item.UnitaryPrice,
+                        Import = item.Quantity * item.UnitaryPrice,
                         State = 1
                     };
-                    _context.Sales.Add(venta);
-                    _context.SaveChanges();
-                    foreach (var item in oSaleRequest.Concepts)
-                    {
-                        Concept concept = new()
-                        {
-                            IdSale = venta.Id,
-                            IdProduct = item.IdProduct,
-                            Quantity = item.Quantity,
-                            UnitaryPrice = item.UnitaryPrice,
-                            Import = item.Quantity * item.UnitaryPrice,
-                            State = 1
-                        };
-                        _context.Concepts.Add(concept);
-                        _context.Products.Find(item.IdProduct).Stock -= item.Quantity;
-                    }
-                    
-                    _context.SaveChanges();
-                    dbTransaction.Commit();
+                    _context.Concepts.Add(concept);
+                    var product = _context.Products.Single(p => p.Id == item.IdProduct);
+                    product.Stock -= item.Quantity;
+                }
 
-                    Sale? oSale = _context.Sales
-                              .Include(x => x.Client)
-                              .Include(x => x.Concepts)
-                              .FirstOrDefault(x => x.Id == venta.Id);
-                    return new ApiResponse<Sale>
-                    {
-                        Success = 1,
-                        Message = "Se agrego correctamente la venta",
-                        Data = oSale != null ? [oSale] : [],
-                        TotalCount = 1
-                    };
-                }
-                catch (Exception e)
+                _context.SaveChanges();
+                dbTransaction.Commit();
+
+                Sale? oSale = _context.Sales
+                          .Include(x => x.Client)
+                          .Include(x => x.Concepts)
+                          .FirstOrDefault(x => x.Id == venta.Id);
+                return new ApiResponse<Sale>
                 {
-                    dbTransaction.Rollback();
-                    throw new Exception("No se pudo realizar la venta" + e);
-                }
+                    Success = 1,
+                    Message = "Se agrego correctamente la venta",
+                    Data = oSale != null ? [oSale] : [],
+                    TotalCount = 1
+                };
+            }
+            catch (Exception e)
+            {
+                dbTransaction.RollbackToSavepoint("BeforeAddingConcepts");
+                throw new Exception("No se pudo realizar la venta" + e);
             }
         }
+
+
+        // public ApiResponse<Sale> AddSale(SaleRequest oSaleRequest)
+        // {
+        //     using (var dbTransaction = _context.Database.BeginTransaction())
+        //     {
+
+        //         try
+        //         {
+        //             var venta = new Sale
+        //             {
+        //                 Total = oSaleRequest.Concepts.Sum(x => x.Quantity * x.UnitaryPrice),
+        //                 Date = DateTime.Now,
+        //                 IdClient = oSaleRequest.IdClient,
+        //                 State = 1
+        //             };
+        //             _context.Sales.Add(venta);
+        //             _context.SaveChanges();
+        //             foreach (var item in oSaleRequest.Concepts)
+        //             {
+        //                 Concept concept = new()
+        //                 {
+        //                     IdSale = venta.Id,
+        //                     IdProduct = item.IdProduct,
+        //                     Quantity = item.Quantity,
+        //                     UnitaryPrice = item.UnitaryPrice,
+        //                     Import = item.Quantity * item.UnitaryPrice,
+        //                     State = 1
+        //                 };
+        //                 _context.Concepts.Add(concept);
+        //                 var product = _context.Products.Single(p => p.Id == item.IdProduct);
+        //                 product.Stock -= item.Quantity;
+        //             }
+
+
+        //             _context.SaveChanges();
+        //             dbTransaction.Commit();
+
+        //             Sale? oSale = _context.Sales
+        //                       .Include(x => x.Client)
+        //                       .Include(x => x.Concepts)
+        //                       .FirstOrDefault(x => x.Id == venta.Id);
+        //             return new ApiResponse<Sale>
+        //             {
+        //                 Success = 1,
+        //                 Message = "Se agrego correctamente la venta",
+        //                 Data = oSale != null ? [oSale] : [],
+        //                 TotalCount = 1
+        //             };
+        //         }
+        //         catch (Exception e)
+        //         {
+        //             dbTransaction.Rollback();
+        //             throw new Exception("No se pudo realizar la venta" + e);
+        //         }
+        //     }
+        // }
 
         public ApiResponse<Sale> DeleteSale(long Id)
         {
@@ -185,7 +246,7 @@ namespace Web_Service_.Net_Core.Services
                     "total" => query.OrderBy(v => v.Total),
                     _ => query.OrderBy(v => v.Id),
                 };
-                if (queryParameters.Desc==1)
+                if (queryParameters.Desc == 1)
                 {
                     query = query.Reverse(); // This assumes Reverse is a valid extension method for IQueryable (you may need to implement it)
                 }
@@ -228,7 +289,7 @@ namespace Web_Service_.Net_Core.Services
             };
         }
 
-//TODO: Probar bien este metodo que esta raro xD
+        //TODO: Probar bien este metodo que esta raro xD
         public ApiResponse<Sale> UpdateSale(SaleRequest oSaleRequest)
         {
             using (var dbTransaction = _context.Database.BeginTransaction())

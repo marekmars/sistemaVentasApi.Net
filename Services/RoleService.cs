@@ -8,8 +8,8 @@ namespace Web_Service_.Net_Core.Services
 {
     public class RoleService : IRoleService
     {
-        private readonly DBContext _context;
-        public RoleService(DBContext dBContext)
+        private readonly DataContext _context;
+        public RoleService(DataContext dBContext)
         {
             _context = dBContext;
         }
