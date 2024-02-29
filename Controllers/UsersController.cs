@@ -46,7 +46,7 @@ namespace Web_Service_.Net_Core.Controllers
                 {
                     // Set the success flag and welcome message
                     oApiResponse.Success = 1;
-                    oApiResponse.Message = $"Bienvenido {oUserResponse.Mail}";
+                    // oApiResponse.Message = $"Bienvenido {oUserResponse.Mail}";
                     oApiResponse.Data = new List<UserResponse> { oUserResponse };
                 }
             }

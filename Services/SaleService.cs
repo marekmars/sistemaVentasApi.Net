@@ -22,7 +22,7 @@ namespace Web_Service_.Net_Core.Services
         }
         public ApiResponse<Sale> AddSale(SaleRequest oSaleRequest)
         {
-            
+
             using var dbTransaction = _context.Database.BeginTransaction();
 
             try
@@ -219,20 +219,39 @@ namespace Web_Service_.Net_Core.Services
                 TotalCount = 1
             };
         }
-
         public ApiResponse<Sale> GetSales(QueryParameters queryParameters)
         {
             IQueryable<Sale> query = _context.Sales
-            .Include(v => v.Client)
-            .Include(v => v.Concepts)
-            .ThenInclude(c => c.Product);
+                .Include(v => v.Client)
+                .Include(v => v.Concepts)
+                .ThenInclude(c => c.Product);
 
             Console.WriteLine(queryParameters.Filter);
 
-            var totalElements = _context.Sales.Count();
-
             // Add a condition to filter clients with State equal to 1
             query = query.Where(p => p.State == 1);
+
+            if (!string.IsNullOrEmpty(queryParameters.Filter))
+            {
+                string filter = queryParameters.Filter.ToLower();
+                DateTime.TryParse(queryParameters.Filter, out DateTime filterDate);
+                string[] filterWords = filter.Split(' ');
+                query = query.Where(v =>
+                       v.Date.Date == filterDate.Date ||
+                       v.Client.Name.ToLower().Contains(filter) ||
+                       v.Client.LastName.ToLower().Contains(filter) ||
+                       (v.Client.LastName.ToLower() + " " + v.Client.Name.ToLower()).Contains(filter) ||
+                       (v.Client.Name.ToLower() + " " + v.Client.LastName.ToLower()).Contains(filter) ||
+                       filterWords.Contains(v.Client.Name.ToLower()) ||
+                       filterWords.Contains(v.Client.LastName.ToLower()) ||
+                       filterWords.Contains(v.Client.LastName.ToLower()+' '+v.Client.Name.ToLower()) ||
+                       filterWords.Contains(v.Client.Name.ToLower()+' '+v.Client.LastName.ToLower()) ||
+                       v.Concepts.Any(c => c.Product.Name.ToLower().Contains(filter))
+                   );
+
+            }
+
+            var totalElements = query.Count();
 
             // Add an OrderBy clause to make the query predictable
             if (!string.IsNullOrEmpty(queryParameters.OrderBy))
@@ -240,6 +259,7 @@ namespace Web_Service_.Net_Core.Services
                 string orderByProperty = queryParameters.OrderBy.ToLower();
                 query = orderByProperty switch
                 {
+                    "id" => query.OrderBy(v => v.Client.Id),
                     "name" => query.OrderBy(v => v.Client.Name),
                     "lastname" => query.OrderBy(v => v.Client.LastName),
                     "date" => query.OrderBy(v => v.Date),
@@ -261,33 +281,91 @@ namespace Web_Service_.Net_Core.Services
                 query = query.Take(queryParameters.Limit.Value);
             }
 
-            if (!string.IsNullOrEmpty(queryParameters.Filter))
-            {
-                string filter = queryParameters.Filter.ToLower();
-                DateTime.TryParse(queryParameters.Filter, out DateTime filterDate);
-                query = query
-                        .Where(v =>
-                            v.Date.Date == filterDate.Date ||
-                            v.Client.Name.ToLower().Contains(filter) ||
-                            v.Client.LastName.ToLower().Contains(filter) ||
-                            v.Concepts.Any(c => c.Product.Name.ToLower().Contains(filter))
-                  );
-            }
-
             Console.WriteLine("Paso");
 
-            var clients = query.ToList();
+            var sales = query.ToList();
 
-            if (clients.Count == 0) throw new Exception("No se encontraron clientes");
+            if (sales.Count == 0) throw new Exception("No se encontraron clientes");
 
             return new ApiResponse<Sale>
             {
                 Success = 1,
-                Message = "Clients obtenidos correctamente",
-                Data = clients,
+                Message = "Sales obtenidos correctamente",
+                Data = sales,
                 TotalCount = totalElements
             };
         }
+
+        // public ApiResponse<Sale> GetSales(QueryParameters queryParameters)
+        // {
+        //     IQueryable<Sale> query = _context.Sales
+        //     .Include(v => v.Client)
+        //     .Include(v => v.Concepts)
+        //     .ThenInclude(c => c.Product);
+
+        //     Console.WriteLine(queryParameters.Filter);
+
+        //     var totalElements = _context.Sales.Count();
+
+        //     // Add a condition to filter clients with State equal to 1
+        //     query = query.Where(p => p.State == 1);
+
+        //     // Add an OrderBy clause to make the query predictable
+        //     if (!string.IsNullOrEmpty(queryParameters.OrderBy))
+        //     {
+        //         string orderByProperty = queryParameters.OrderBy.ToLower();
+        //         query = orderByProperty switch
+        //         {
+        //             "id" => query.OrderBy(v => v.Client.Id),
+        //             "name" => query.OrderBy(v => v.Client.Name),
+        //             "lastname" => query.OrderBy(v => v.Client.LastName),
+        //             "date" => query.OrderBy(v => v.Date),
+        //             "total" => query.OrderBy(v => v.Total),
+        //             _ => query.OrderBy(v => v.Id),
+        //         };
+        //         if (queryParameters.Desc == 1)
+        //         {
+        //             query = query.Reverse(); // This assumes Reverse is a valid extension method for IQueryable (you may need to implement it)
+        //         }
+        //     }
+        //     if (queryParameters.Skip.HasValue)
+        //     {
+        //         query = query.Skip(queryParameters.Skip.Value);
+        //     }
+
+        //     if (queryParameters.Limit.HasValue)
+        //     {
+        //         query = query.Take(queryParameters.Limit.Value);
+        //     }
+
+        //     if (!string.IsNullOrEmpty(queryParameters.Filter))
+        //     {
+        //         string filter = queryParameters.Filter.ToLower();
+        //         DateTime.TryParse(queryParameters.Filter, out DateTime filterDate);
+        //         query = query
+        //                 .Where(v =>
+        //                     v.Date.Date == filterDate.Date ||
+        //                     v.Client.Name.ToLower().Contains(filter) ||
+        //                     v.Client.LastName.ToLower().Contains(filter) ||
+        //                     v.Concepts.Any(c => c.Product.Name.ToLower().Contains(filter))
+        //           );
+        //           totalElements = query.Count();
+        //     }
+
+        //     Console.WriteLine("Paso");
+
+        //     var sales = query.ToList();
+
+        //     if (sales.Count == 0) throw new Exception("No se encontraron clientes");
+
+        //     return new ApiResponse<Sale>
+        //     {
+        //         Success = 1,
+        //         Message = "Sales obtenidos correctamente",
+        //         Data = sales,
+        //         TotalCount = totalElements
+        //     };
+        // }
 
         //TODO: Probar bien este metodo que esta raro xD
         public ApiResponse<Sale> UpdateSale(SaleRequest oSaleRequest)

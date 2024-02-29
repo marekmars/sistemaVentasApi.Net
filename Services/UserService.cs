@@ -52,8 +52,8 @@ namespace Web_Service_.Net_Core.Services
             {
                 throw new Exception("Credenciales incorrectas");
             }
-            userResponse.Mail = oUser.Mail;
-            userResponse.Role = GetRole(oUser);
+            // userResponse.Mail = oUser.Mail;
+            // userResponse.Role = GetRole(oUser);
             userResponse.Token = GetToken(oUser);
             return userResponse;
         }
