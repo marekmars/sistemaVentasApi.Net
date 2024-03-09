@@ -23,6 +23,7 @@ public partial class DataContext : DbContext
     public virtual DbSet<Sale> Sales { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
+    public virtual DbSet<Image> Images { get; set; }
 
 
 
@@ -113,9 +114,10 @@ public partial class DataContext : DbContext
             entity.Property(e => e.UnitaryPrice)
                 .HasPrecision(16, 2)
                 .HasColumnName("unitary_price");
-            entity.Property(e => e.ImageUrl)
-            .HasMaxLength(250)
-            .HasColumnName("image_url");
+            entity.HasMany(p => p.Images)
+        .WithOne(i => i.Product)
+        .HasForeignKey(i => i.IdProduct)
+        .IsRequired(false);
         });
 
         modelBuilder.Entity<Role>(entity =>
@@ -153,6 +155,31 @@ public partial class DataContext : DbContext
             entity.Property(e => e.Total)
                 .HasPrecision(16, 2)
                 .HasColumnName("total");
+
+        });
+        modelBuilder.Entity<Image>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("images");
+
+            entity.HasIndex(e => e.IdProduct, "fk_product_image");
+
+            entity.Property(e => e.Id)
+                .HasColumnType("bigint(20)")
+                .HasColumnName("id");
+            entity.Property(e => e.DeleteHash)
+                .HasColumnType("varchar(20)")
+                .HasColumnName("delete_hash");
+            entity.Property(e => e.Name)
+                .HasColumnType("varchar(50)")
+                .HasColumnName("name");
+            entity.Property(e => e.Url)
+            .HasColumnType("varchar(255)")
+            .HasColumnName("url");
+            entity.Property(e => e.IdProduct)
+                .HasColumnType("bigint(20)")
+                .HasColumnName("id_product");
 
         });
 

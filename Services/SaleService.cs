@@ -78,62 +78,6 @@ namespace Web_Service_.Net_Core.Services
         }
 
 
-        // public ApiResponse<Sale> AddSale(SaleRequest oSaleRequest)
-        // {
-        //     using (var dbTransaction = _context.Database.BeginTransaction())
-        //     {
-
-        //         try
-        //         {
-        //             var venta = new Sale
-        //             {
-        //                 Total = oSaleRequest.Concepts.Sum(x => x.Quantity * x.UnitaryPrice),
-        //                 Date = DateTime.Now,
-        //                 IdClient = oSaleRequest.IdClient,
-        //                 State = 1
-        //             };
-        //             _context.Sales.Add(venta);
-        //             _context.SaveChanges();
-        //             foreach (var item in oSaleRequest.Concepts)
-        //             {
-        //                 Concept concept = new()
-        //                 {
-        //                     IdSale = venta.Id,
-        //                     IdProduct = item.IdProduct,
-        //                     Quantity = item.Quantity,
-        //                     UnitaryPrice = item.UnitaryPrice,
-        //                     Import = item.Quantity * item.UnitaryPrice,
-        //                     State = 1
-        //                 };
-        //                 _context.Concepts.Add(concept);
-        //                 var product = _context.Products.Single(p => p.Id == item.IdProduct);
-        //                 product.Stock -= item.Quantity;
-        //             }
-
-
-        //             _context.SaveChanges();
-        //             dbTransaction.Commit();
-
-        //             Sale? oSale = _context.Sales
-        //                       .Include(x => x.Client)
-        //                       .Include(x => x.Concepts)
-        //                       .FirstOrDefault(x => x.Id == venta.Id);
-        //             return new ApiResponse<Sale>
-        //             {
-        //                 Success = 1,
-        //                 Message = "Se agrego correctamente la venta",
-        //                 Data = oSale != null ? [oSale] : [],
-        //                 TotalCount = 1
-        //             };
-        //         }
-        //         catch (Exception e)
-        //         {
-        //             dbTransaction.Rollback();
-        //             throw new Exception("No se pudo realizar la venta" + e);
-        //         }
-        //     }
-        // }
-
         public ApiResponse<Sale> DeleteSale(long Id)
         {
             using (var transaction = _context.Database.BeginTransaction())
@@ -226,7 +170,7 @@ namespace Web_Service_.Net_Core.Services
                 .Include(v => v.Concepts)
                 .ThenInclude(c => c.Product);
 
-            Console.WriteLine(queryParameters.Filter);
+   
 
             // Add a condition to filter clients with State equal to 1
             query = query.Where(p => p.State == 1);
@@ -259,7 +203,7 @@ namespace Web_Service_.Net_Core.Services
                 string orderByProperty = queryParameters.OrderBy.ToLower();
                 query = orderByProperty switch
                 {
-                    "id" => query.OrderBy(v => v.Client.Id),
+                    "id" => query.OrderBy(v => v.Id),
                     "name" => query.OrderBy(v => v.Client.Name),
                     "lastname" => query.OrderBy(v => v.Client.LastName),
                     "date" => query.OrderBy(v => v.Date),
@@ -271,6 +215,7 @@ namespace Web_Service_.Net_Core.Services
                     query = query.Reverse(); // This assumes Reverse is a valid extension method for IQueryable (you may need to implement it)
                 }
             }
+
             if (queryParameters.Skip.HasValue)
             {
                 query = query.Skip(queryParameters.Skip.Value);
@@ -281,7 +226,7 @@ namespace Web_Service_.Net_Core.Services
                 query = query.Take(queryParameters.Limit.Value);
             }
 
-            Console.WriteLine("Paso");
+          
 
             var sales = query.ToList();
 

@@ -276,3 +276,4 @@ E:\Descargas\sistemaVentasApi.Net-main\obj\Debug\net8.0\refint\Web Service .Net 
 E:\Descargas\sistemaVentasApi.Net-main\obj\Debug\net8.0\Web Service .Net Core.pdb
 E:\Descargas\sistemaVentasApi.Net-main\obj\Debug\net8.0\Web Service .Net Core.genruntimeconfig.cache
 E:\Descargas\sistemaVentasApi.Net-main\obj\Debug\net8.0\ref\Web Service .Net Core.dll
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\obj\Debug\net8.0\Web Service .Net Core.sourcelink.json

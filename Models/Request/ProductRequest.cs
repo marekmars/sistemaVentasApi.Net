@@ -15,16 +15,21 @@ namespace Web_Service_.Net_Core.Models.Request
         public string Name { get; set; } = null!;
         [Required]
         [Range(0, 9999999999999999.99, ErrorMessage = "El precio unitario debe ser mayor a 0")]
-
         public decimal UnitaryPrice { get; set; }
         [Required]
         [Range(0, 9999999999999999.99, ErrorMessage = "El costo debe ser mayor a 0")]
         public decimal Cost { get; set; }
         [RegularExpression(@"^[0-9]\d*$", ErrorMessage = "El stock debe ser un número entero no negativo")]
         public int Stock { get; set; }
-
-        public string? ImageUrl { get; set; }
         public string? Description { get; set; }
+        public List<Image>? Images { get; set; }
+    }
+    public class ImageRequest
+    {
+        public string DeleteHash {get;set;} ="";
+        public string? Name { get; set; }
+        public string? Url { get; set; }
 
     }
+
 }

@@ -19,30 +19,8 @@ namespace Web_Service_.Net_Core.Services
         {
             IQueryable<Client> query = _context.Clients;
 
-            Console.WriteLine(queryParameters.Filter);
-
-            var totalElements = _context.Clients.Count();
-
             // Add a condition to filter clients with State equal to 1
             query = query.Where(p => p.State == 1);
-
-            if (!string.IsNullOrEmpty(queryParameters.OrderBy))
-            {
-                string orderByProperty = queryParameters.OrderBy.ToLower();
-                query = orderByProperty switch
-                {
-                    "name" => query.OrderBy(c => c.Name),
-                    "lastname" => query.OrderBy(c => c.LastName),
-                    "dni" => query.OrderBy(c => c.IdCard),
-                    "mail" => query.OrderBy(c => c.Mail),
-                    _ => query.OrderBy(c => c.Id),
-                };
-                if (queryParameters.Desc==1)
-                {
-                    query = query.Reverse(); // This assumes Reverse is a valid extension method for IQueryable (you may need to implement it)
-                }
-            }
-
 
             if (!string.IsNullOrEmpty(queryParameters.Filter))
             {
@@ -51,12 +29,35 @@ namespace Web_Service_.Net_Core.Services
 
                 query = query.AsEnumerable().Where(c =>
                     filters.All(f =>
+                        c.Id.ToString().Contains(f) ||
                         c.Name.Contains(f, StringComparison.CurrentCultureIgnoreCase) ||
                         c.LastName.Contains(f, StringComparison.CurrentCultureIgnoreCase) ||
                         c.IdCard.Contains(f, StringComparison.CurrentCultureIgnoreCase)
                     )
                 ).AsQueryable();
             }
+
+
+            var totalElements = query.Count();
+
+            if (!string.IsNullOrEmpty(queryParameters.OrderBy))
+            {
+                string orderByProperty = queryParameters.OrderBy.ToLower();
+                query = orderByProperty switch
+                {
+                    "id" => query.OrderBy(c => c.Id),
+                    "name" => query.OrderBy(c => c.Name),
+                    "lastname" => query.OrderBy(c => c.LastName),
+                    "dni" => query.OrderBy(c => c.IdCard),
+                    "mail" => query.OrderBy(c => c.Mail),
+                    _ => query.OrderBy(c => c.Id),
+                };
+                if (queryParameters.Desc == 1)
+                {
+                    query = query.Reverse(); // This assumes Reverse is a valid extension method for IQueryable (you may need to implement it)
+                }
+            }
+
 
             if (queryParameters.Skip.HasValue)
             {
@@ -77,7 +78,7 @@ namespace Web_Service_.Net_Core.Services
             return new ApiResponse<Client>
             {
                 Success = 1,
-                Message = "Clients obtenidos correctamente",
+                Message = "Clientes obtenidos correctamente",
                 Data = clientes,
                 TotalCount = totalElements
             };
@@ -108,7 +109,7 @@ namespace Web_Service_.Net_Core.Services
                 LastName = oClientRequest.LastName,
                 IdCard = oClientRequest.IdCard,
                 Mail = oClientRequest.Mail,
-                State=1
+                State = 1
             };
 
             _context.Add(oClient);

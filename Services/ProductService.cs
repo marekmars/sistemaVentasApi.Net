@@ -20,26 +20,54 @@ namespace Web_Service_.Net_Core.Services
 
         public ApiResponse<Product> AddProduct(ProductRequest oProductRequest)
         {
+            // Create the Product entity
             Product oProduct = new()
             {
                 Name = oProductRequest.Name,
                 UnitaryPrice = oProductRequest.UnitaryPrice,
                 Cost = oProductRequest.Cost,
                 Stock = oProductRequest.Stock,
+                Description = oProductRequest.Description,
                 State = 1
             };
 
+            // Add the Product entity to the context and save changes
             _context.Add(oProduct);
             _context.SaveChanges();
+
+            // Check if there are images in the request
+            if (oProductRequest.Images != null && oProductRequest.Images.Count > 0)
+            {
+                // Iterate over each image in the request
+                foreach (var imageRequest in oProductRequest.Images)
+                {
+                    // Create a new Image entity
+                    var imageEntity = new Image
+                    {
+                        DeleteHash = imageRequest.DeleteHash,
+                        Name = imageRequest.Name,
+                        Url = imageRequest.Url,
+                        IdProduct = oProduct.Id  // Set the foreign key to the Id of the newly created Product
+                    };
+
+                    // Add the Image entity to the context
+                    _context.Images.Add(imageEntity);
+                }
+
+                // Save changes to the database after adding all images
+                _context.SaveChanges();
+            }
 
             return new ApiResponse<Product>
             {
                 Success = 1,
                 Message = "Product creado correctamente",
-                Data = [oProduct],
+                Data = new List<Product> { oProduct },  // Wrap the product in a list
                 TotalCount = 1
             };
         }
+
+
 
         public ApiResponse<Product> DeleteProduct(long Id)
         {
@@ -77,9 +105,11 @@ namespace Web_Service_.Net_Core.Services
         public ApiResponse<Product> GetProduct(long Id)
         {
             Product? oProduct = _context.Products
+                              .Include(p => p.Images)
                               .Where(p => p.Id == Id && p.State == 1)
                               .FirstOrDefault()
                               ?? throw new Exception("No se encontro un producto activo con ese ID");
+
 
             return new ApiResponse<Product>
             {
@@ -94,19 +124,34 @@ namespace Web_Service_.Net_Core.Services
         {
             IQueryable<Product> query = _context.Products;
 
-            Console.WriteLine(queryParameters.Filter);
 
-            var totalElements = _context.Products.Count();
 
             // Add a condition to filter clients with State equal to 1
-            query = query.Where(p => p.State == 1);
+            query = query
+            .Include(p => p.Images)
+            .Where(p => p.State == 1);
+            if (!string.IsNullOrEmpty(queryParameters.Filter))
+            {
+                string filter = queryParameters.Filter.ToLower();
+                string[] filters = filter.Split(' ');
 
-            // Add an OrderBy clause to make the query predictable
+                query = query.AsEnumerable().Where(p =>
+                    filters.All(f =>
+                        p.Name.Contains(f, StringComparison.CurrentCultureIgnoreCase) ||
+                        p.Id.ToString().Contains(f, StringComparison.CurrentCultureIgnoreCase)
+                    )
+                ).AsQueryable();
+            }
+
+            var totalElements = query.Count();
+
+
             if (!string.IsNullOrEmpty(queryParameters.OrderBy))
             {
                 string orderByProperty = queryParameters.OrderBy.ToLower();
                 query = orderByProperty switch
                 {
+                    "id" => query.OrderBy(p => p.Id),
                     "name" => query.OrderBy(p => p.Name),
                     "price" => query.OrderBy(p => p.UnitaryPrice),
                     "cost" => query.OrderBy(p => p.Cost),
@@ -119,28 +164,18 @@ namespace Web_Service_.Net_Core.Services
                 }
             }
 
-            if (!string.IsNullOrEmpty(queryParameters.Filter))
-            {
-                string filter = queryParameters.Filter.ToLower();
-                string[] filters = filter.Split(' ');
 
-                query = query.AsEnumerable().Where(p =>
-                    filters.All(f =>
-                        p.Name.Contains(f, StringComparison.CurrentCultureIgnoreCase)
-                    )
-                ).AsQueryable();
-            }
-            if (queryParameters.Max > 0)
-            {
-                query = query.AsEnumerable().Where(p =>
-                          p.UnitaryPrice <= queryParameters.Max).AsQueryable();
+            // if (queryParameters.Max > 0)
+            // {
+            //     query = query.AsEnumerable().Where(p =>
+            //               p.UnitaryPrice <= queryParameters.Max).AsQueryable();
 
-            }
-            if (queryParameters.Min > 0)
-            {
-                query = query.AsEnumerable().Where(p =>
-                       queryParameters.Min <= p.UnitaryPrice).AsQueryable();
-            }
+            // }
+            // if (queryParameters.Min > 0)
+            // {
+            //     query = query.AsEnumerable().Where(p =>
+            //            queryParameters.Min <= p.UnitaryPrice).AsQueryable();
+            // }
 
 
             if (queryParameters.Skip.HasValue)
@@ -176,7 +211,28 @@ namespace Web_Service_.Net_Core.Services
             oProduct.UnitaryPrice = (oProductRequest.UnitaryPrice > 0) ? oProductRequest.UnitaryPrice : oProduct.UnitaryPrice;
             oProduct.Cost = (oProductRequest.Cost > 0) ? oProductRequest.Cost : oProduct.Cost;
             oProduct.Stock = (oProductRequest.Stock > 0) ? oProductRequest.Stock : oProduct.Stock;
+            oProduct.Description = (!string.IsNullOrEmpty(oProductRequest.Description)) ? oProductRequest.Description : oProduct.Description;
+            if (oProductRequest.Images != null && oProductRequest.Images.Count > 0)
+            {
+                // Iterate over each image in the request
+                foreach (var imageRequest in oProductRequest.Images)
+                {
+                    // Create a new Image entity
+                    var imageEntity = new Image
+                    {
+                        DeleteHash = imageRequest.DeleteHash,
+                        Name = imageRequest.Name,
+                        Url = imageRequest.Url,
+                        IdProduct = oProduct.Id  // Set the foreign key to the Id of the newly created Product
+                    };
 
+                    // Add the Image entity to the context
+                    _context.Images.Add(imageEntity);
+                }
+
+                // Save changes to the database after adding all images
+                _context.SaveChanges();
+            }
             _context.Entry(oProduct).State = EntityState.Modified;
             _context.SaveChanges();
 

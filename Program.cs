@@ -35,7 +35,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ISaleService, SaleService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IClientService, ClientService>();
-builder.Services.AddScoped<IConceptService, ConceptService>();
+builder.Services.AddScoped<IImageService, ImageService>();
 builder.Services.AddScoped<IRoleService, RoleService>();
 
 builder.Services.AddAuthentication(options =>
