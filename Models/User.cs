@@ -23,4 +23,6 @@ public partial class User
     public byte State { get; set; }
     [ForeignKey("IdRole")]
     public virtual Role? Role { get; set; } = null!;
+
+    public Image? Avatar { get; set; }
 }

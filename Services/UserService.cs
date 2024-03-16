@@ -24,7 +24,7 @@ namespace Web_Service_.Net_Core.Services
 {
 
     public class UserService : IUserService
-    
+
     {
         private readonly IConfiguration _configuration;
         private readonly DataContext _context;
@@ -32,7 +32,7 @@ namespace Web_Service_.Net_Core.Services
 
         public UserService(IConfiguration configuration, DataContext dBContext)
         {
-           _configuration = configuration;
+            _configuration = configuration;
             _context = dBContext;
         }
         public UserResponse Authenticate(AuthRequest oAuthRequest)
@@ -85,34 +85,35 @@ namespace Web_Service_.Net_Core.Services
             return _context.Roles.Where(x => x.Id == usuario.IdRole).Select(x => x.Name).FirstOrDefault();
         }
 
+        public ApiResponse<User> GetCurrentUser(string token)
+        {
+
+            string tokenString = token.Replace("Bearer ", "");
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadJwtToken(tokenString);
+            Console.WriteLine("Token: " + tokenString);
+            var id = jsonToken.Claims.FirstOrDefault(c => c.Type == "nameid");
+            var user = _context.Users
+            .Where(u => u.Id.ToString() == id.Value)
+            .Include(u => u.Role)
+            .Include(u => u.Avatar)
+            .FirstOrDefault();
+            // var user = _context.Users.Where(u => u.Id.ToString() == jsonToken.Claims.NameIdentifier).FirstOrDefault();
+            return new ApiResponse<User>
+            {
+                Success = 1,
+                Message = "Token correcto",
+                Data = [user],
+                TotalCount = 1
+            };
+        }
 
         public ApiResponse<User> GetUsers(QueryParameters queryParameters)
         {
-            IQueryable<User> query = _context.Users.Include(u => u.Role);
-            query = query.Where(u => u.State == 1);
-            var totalElements = _context.Clients.Count();
-
-
-            query = query.Where(p => p.State == 1);
-
-            if (!string.IsNullOrEmpty(queryParameters.OrderBy))
-            {
-                string orderByProperty = queryParameters.OrderBy.ToLower();
-                query = orderByProperty switch
-                {
-                    "name" => query.OrderBy(u => u.Name),
-                    "lastname" => query.OrderBy(u => u.LastName),
-                    "dni" => query.OrderBy(u => u.IdCard),
-                    "rol" => query.OrderBy(u => u.Role.Name),
-                    "mail" => query.OrderBy(u => u.Mail),
-                    _ => query.OrderBy(u => u.Id),
-                };
-                if (queryParameters.Desc==1)
-                {
-                    query = query.Reverse(); // This assumes Reverse is a valid extension method for IQueryable (you may need to implement it)
-                }
-            }
-
+            IQueryable<User> query = _context.Users
+            .Include(u => u.Role)
+            .Include(u => u.Avatar)
+            .Where(u => u.State == 1);
 
 
             if (!string.IsNullOrEmpty(queryParameters.Filter))
@@ -130,6 +131,28 @@ namespace Web_Service_.Net_Core.Services
                 ).AsQueryable();
             }
 
+            var totalElements = query.Count();
+
+            if (!string.IsNullOrEmpty(queryParameters.OrderBy))
+            {
+                string orderByProperty = queryParameters.OrderBy.ToLower();
+                query = orderByProperty switch
+                {
+                    "id" => query.OrderBy(u => u.Id),
+                    "name" => query.OrderBy(u => u.Name),
+                    "lastname" => query.OrderBy(u => u.LastName),
+                    "idcard" => query.OrderBy(u => u.IdCard),
+                    "role" => query.OrderBy(u => u.Role.Name),
+                    "mail" => query.OrderBy(u => u.Mail),
+                    _ => query.OrderBy(u => u.Id),
+                };
+                if (queryParameters.Desc == 1)
+                {
+                    query = query.Reverse(); // This assumes Reverse is a valid extension method for IQueryable (you may need to implement it)
+                }
+            }
+
+
             if (queryParameters.Skip.HasValue)
             {
                 query = query.Skip(queryParameters.Skip.Value);
@@ -144,6 +167,7 @@ namespace Web_Service_.Net_Core.Services
 
             if (usuarios.Count == 0) throw new Exception("No se encontraron usuarios");
 
+            usuarios.ForEach(u => u.Password = "");
             return new ApiResponse<User>
             {
                 Success = 1,
@@ -159,7 +183,7 @@ namespace Web_Service_.Net_Core.Services
             oUser.State = 0;
             _context.Entry(oUser).State = EntityState.Modified;
             _context.SaveChanges();
-
+            oUser.Password = "";
             return new ApiResponse<User>
             {
                 Success = 1,
@@ -171,14 +195,14 @@ namespace Web_Service_.Net_Core.Services
 
         public ApiResponse<User> UpdateUser(UserRequest oUserRequest)
         {
-            Console.WriteLine("Editando usuario: " + oUserRequest.IdRole);
+            Console.WriteLine("=====================================================");
+            Console.WriteLine("Editando usuario: " + oUserRequest.Avatar.Url);
+            Console.WriteLine("=====================================================");
             User? oUser = _context.Users
                                .Include(u => u.Role)
                                .Where(c => c.Id == oUserRequest.Id && c.State == 1)
                                .FirstOrDefault()
                                ?? throw new Exception("No se encontro un usuario activo con ese ID");
-
-
 
             oUser.IdRole = oUserRequest.IdRole != 0 ? oUserRequest.IdRole : oUser.IdRole;
             oUser.Name = !string.IsNullOrEmpty(oUserRequest.Name) ? oUserRequest.Name : oUser.Name;
@@ -197,6 +221,26 @@ namespace Web_Service_.Net_Core.Services
 
             _context.Entry(oUser).State = EntityState.Modified;
             _context.SaveChanges();
+
+
+            if (oUserRequest.Avatar != null)
+            {
+                var imageEntity = new Image
+                {
+                    DeleteHash = oUserRequest.Avatar.DeleteHash,
+                    Name = oUserRequest.Avatar.Name,
+                    Url = oUserRequest.Avatar.Url,
+                    IdUser = oUser.Id  // Set the foreign key to the Id of the newly created User
+                };
+
+                // Add the Image entity to the context
+                _context.Images.RemoveRange(_context.Images.Where(i => i.IdUser == oUser.Id));
+                _context.Images.Add(imageEntity);
+
+                _context.SaveChanges();
+            }
+
+            oUser.Password = "";
             return new ApiResponse<User>
             {
                 Success = 1,
@@ -222,6 +266,22 @@ namespace Web_Service_.Net_Core.Services
             };
             _context.Add(oUser);
             _context.SaveChanges();
+            if (oUserRequest.Avatar != null)
+            {
+                var imageEntity = new Image
+                {
+                    DeleteHash = oUserRequest.Avatar.DeleteHash,
+                    Name = oUserRequest.Avatar.Name,
+                    Url = oUserRequest.Avatar.Url,
+                    IdUser = oUser.Id  // Set the foreign key to the Id of the newly created User
+                };
+
+                // Add the Image entity to the context
+                _context.Images.Add(imageEntity);
+                _context.SaveChanges();
+            }
+
+            oUser.Password = "";
 
             return new ApiResponse<User>
             {
@@ -236,13 +296,14 @@ namespace Web_Service_.Net_Core.Services
         {
             var oUser = _context.Users
                .Include(u => u.Role)
+               .Include(u => u.Avatar)
                .FirstOrDefault(u => u.Id == id);
 
             if (oUser == null)
             {
                 throw new Exception("No se encontro el cliente");
             }
-
+            oUser.Password = "";
             return new ApiResponse<User>
             {
                 Success = 1,

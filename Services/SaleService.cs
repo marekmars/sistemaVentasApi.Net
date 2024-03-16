@@ -22,7 +22,7 @@ namespace Web_Service_.Net_Core.Services
         }
         public ApiResponse<Sale> AddSale(SaleRequest oSaleRequest)
         {
-
+            Console.WriteLine("AFecha de venta: " + oSaleRequest.Date);
             using var dbTransaction = _context.Database.BeginTransaction();
 
             try
@@ -30,7 +30,7 @@ namespace Web_Service_.Net_Core.Services
                 var venta = new Sale
                 {
                     Total = oSaleRequest.Concepts.Sum(x => x.Quantity * x.UnitaryPrice),
-                    Date = DateTime.Now,
+                    Date = oSaleRequest.Date ?? DateTime.Now,
                     IdClient = oSaleRequest.IdClient,
                     State = 1
                 };
@@ -170,7 +170,7 @@ namespace Web_Service_.Net_Core.Services
                 .Include(v => v.Concepts)
                 .ThenInclude(c => c.Product);
 
-   
+
 
             // Add a condition to filter clients with State equal to 1
             query = query.Where(p => p.State == 1);
@@ -188,8 +188,8 @@ namespace Web_Service_.Net_Core.Services
                        (v.Client.Name.ToLower() + " " + v.Client.LastName.ToLower()).Contains(filter) ||
                        filterWords.Contains(v.Client.Name.ToLower()) ||
                        filterWords.Contains(v.Client.LastName.ToLower()) ||
-                       filterWords.Contains(v.Client.LastName.ToLower()+' '+v.Client.Name.ToLower()) ||
-                       filterWords.Contains(v.Client.Name.ToLower()+' '+v.Client.LastName.ToLower()) ||
+                       filterWords.Contains(v.Client.LastName.ToLower() + ' ' + v.Client.Name.ToLower()) ||
+                       filterWords.Contains(v.Client.Name.ToLower() + ' ' + v.Client.LastName.ToLower()) ||
                        v.Concepts.Any(c => c.Product.Name.ToLower().Contains(filter))
                    );
 
@@ -226,7 +226,7 @@ namespace Web_Service_.Net_Core.Services
                 query = query.Take(queryParameters.Limit.Value);
             }
 
-          
+
 
             var sales = query.ToList();
 
@@ -241,80 +241,13 @@ namespace Web_Service_.Net_Core.Services
             };
         }
 
-        // public ApiResponse<Sale> GetSales(QueryParameters queryParameters)
-        // {
-        //     IQueryable<Sale> query = _context.Sales
-        //     .Include(v => v.Client)
-        //     .Include(v => v.Concepts)
-        //     .ThenInclude(c => c.Product);
 
-        //     Console.WriteLine(queryParameters.Filter);
-
-        //     var totalElements = _context.Sales.Count();
-
-        //     // Add a condition to filter clients with State equal to 1
-        //     query = query.Where(p => p.State == 1);
-
-        //     // Add an OrderBy clause to make the query predictable
-        //     if (!string.IsNullOrEmpty(queryParameters.OrderBy))
-        //     {
-        //         string orderByProperty = queryParameters.OrderBy.ToLower();
-        //         query = orderByProperty switch
-        //         {
-        //             "id" => query.OrderBy(v => v.Client.Id),
-        //             "name" => query.OrderBy(v => v.Client.Name),
-        //             "lastname" => query.OrderBy(v => v.Client.LastName),
-        //             "date" => query.OrderBy(v => v.Date),
-        //             "total" => query.OrderBy(v => v.Total),
-        //             _ => query.OrderBy(v => v.Id),
-        //         };
-        //         if (queryParameters.Desc == 1)
-        //         {
-        //             query = query.Reverse(); // This assumes Reverse is a valid extension method for IQueryable (you may need to implement it)
-        //         }
-        //     }
-        //     if (queryParameters.Skip.HasValue)
-        //     {
-        //         query = query.Skip(queryParameters.Skip.Value);
-        //     }
-
-        //     if (queryParameters.Limit.HasValue)
-        //     {
-        //         query = query.Take(queryParameters.Limit.Value);
-        //     }
-
-        //     if (!string.IsNullOrEmpty(queryParameters.Filter))
-        //     {
-        //         string filter = queryParameters.Filter.ToLower();
-        //         DateTime.TryParse(queryParameters.Filter, out DateTime filterDate);
-        //         query = query
-        //                 .Where(v =>
-        //                     v.Date.Date == filterDate.Date ||
-        //                     v.Client.Name.ToLower().Contains(filter) ||
-        //                     v.Client.LastName.ToLower().Contains(filter) ||
-        //                     v.Concepts.Any(c => c.Product.Name.ToLower().Contains(filter))
-        //           );
-        //           totalElements = query.Count();
-        //     }
-
-        //     Console.WriteLine("Paso");
-
-        //     var sales = query.ToList();
-
-        //     if (sales.Count == 0) throw new Exception("No se encontraron clientes");
-
-        //     return new ApiResponse<Sale>
-        //     {
-        //         Success = 1,
-        //         Message = "Sales obtenidos correctamente",
-        //         Data = sales,
-        //         TotalCount = totalElements
-        //     };
         // }
 
         //TODO: Probar bien este metodo que esta raro xD
         public ApiResponse<Sale> UpdateSale(SaleRequest oSaleRequest)
         {
+
             using (var dbTransaction = _context.Database.BeginTransaction())
             {
                 try
@@ -332,19 +265,38 @@ namespace Web_Service_.Net_Core.Services
                     _context.Entry(oSale).State = EntityState.Modified;
                     _context.SaveChanges();
 
+                    var existingConcepts = _context.Concepts.Where(ec => ec.IdSale == oSaleRequest.Id).ToList();
+                    foreach (var existingConcept in existingConcepts)
+                    {
+                        // Verificar si el concepto existente no está en la nueva venta
+                        if (!oSaleRequest.Concepts.Any(updatedConcept => updatedConcept.Id == existingConcept.Id))
+                        {
+                            // Si no está en la nueva venta, eliminarlo de la base de datos
+                            _context.Entry(existingConcept).State = EntityState.Deleted;
+                        }
+                    }
+
+
                     foreach (var updatedConcept in oSaleRequest.Concepts)
                     {
                         var existingConcept = _context.Concepts.FirstOrDefault(ec => ec.Id == updatedConcept.Id);
 
                         if (existingConcept != null)
                         {
+
+                            int quantity = updatedConcept.Quantity - existingConcept.Quantity;
+
                             // Update properties of the existing Concept
                             existingConcept.IdProduct = updatedConcept.IdProduct;
                             existingConcept.Quantity = updatedConcept.Quantity;
                             existingConcept.UnitaryPrice = updatedConcept.UnitaryPrice;
-                            existingConcept.Import = existingConcept.Quantity * existingConcept.UnitaryPrice;
-
+                            existingConcept.Import = updatedConcept.Quantity * updatedConcept.UnitaryPrice;
                             _context.Entry(existingConcept).State = EntityState.Modified;
+
+                            var product = _context.Products.Single(p => p.Id == updatedConcept.IdProduct);
+                            Console.WriteLine("El stock de ese producto es: " + product.Stock);
+                            Console.WriteLine("La cantidad es: " + quantity);
+                            product.Stock -= quantity;
                         }
                         else
                         {
@@ -358,6 +310,8 @@ namespace Web_Service_.Net_Core.Services
                                 State = 1
                             };
                             _context.Entry(concept).State = EntityState.Added;
+                            var product = _context.Products.Single(p => p.Id == updatedConcept.IdProduct);
+                            product.Stock -= updatedConcept.Quantity;
                         }
                     }
                     _context.SaveChanges();

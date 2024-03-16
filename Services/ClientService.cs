@@ -32,6 +32,7 @@ namespace Web_Service_.Net_Core.Services
                         c.Id.ToString().Contains(f) ||
                         c.Name.Contains(f, StringComparison.CurrentCultureIgnoreCase) ||
                         c.LastName.Contains(f, StringComparison.CurrentCultureIgnoreCase) ||
+                        c.Mail.Contains(f, StringComparison.CurrentCultureIgnoreCase) ||
                         c.IdCard.Contains(f, StringComparison.CurrentCultureIgnoreCase)
                     )
                 ).AsQueryable();
@@ -48,7 +49,7 @@ namespace Web_Service_.Net_Core.Services
                     "id" => query.OrderBy(c => c.Id),
                     "name" => query.OrderBy(c => c.Name),
                     "lastname" => query.OrderBy(c => c.LastName),
-                    "dni" => query.OrderBy(c => c.IdCard),
+                    "idcard" => query.OrderBy(c => c.IdCard),
                     "mail" => query.OrderBy(c => c.Mail),
                     _ => query.OrderBy(c => c.Id),
                 };

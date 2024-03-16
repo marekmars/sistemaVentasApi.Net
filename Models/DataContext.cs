@@ -75,7 +75,7 @@ public partial class DataContext : DbContext
                 .HasColumnName("id_product");
             entity.Property(e => e.IdSale)
                 .HasColumnType("bigint(20)")
-                .HasColumnName("idSale");
+                .HasColumnName("id_sale");
             entity.Property(e => e.Import)
                 .HasPrecision(16, 2)
                 .HasColumnName("import");
@@ -179,7 +179,12 @@ public partial class DataContext : DbContext
             .HasColumnName("url");
             entity.Property(e => e.IdProduct)
                 .HasColumnType("bigint(20)")
-                .HasColumnName("id_product");
+                .HasColumnName("id_product")
+                .IsRequired(false); ;
+            entity.Property(e => e.IdUser)
+                .HasColumnType("bigint(20)")
+                .HasColumnName("id_user")
+                .IsRequired(false); ;
 
         });
 
@@ -213,6 +218,9 @@ public partial class DataContext : DbContext
                 .HasMaxLength(256)
                 .HasColumnName("password");
             entity.Property(e => e.State).HasColumnName("state");
+            entity.HasOne(u => u.Avatar)
+                   .WithOne(i => i.User)
+                   .IsRequired(false);
         });
 
         OnModelCreatingPartial(modelBuilder);

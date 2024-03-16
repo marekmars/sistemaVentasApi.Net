@@ -20,7 +20,7 @@ namespace Web_Service_.Net_Core.Models.Request
         [EmailValid(ErrorMessage = "El correo ya existe")]
         public string Mail { get; set; } = null!;
         [MinLength(6, ErrorMessage = "La clave debe tener un minimo de 6 caracteres")]
-        public string Password { get; set; } = null!;
+        public string? Password { get; set; } = null!;
         [Required]
         [MinLength(3, ErrorMessage = "El nombre debe tenes un minimo de 3 caracteres")]
         public string Name { get; set; } = null!;
@@ -29,6 +29,8 @@ namespace Web_Service_.Net_Core.Models.Request
         public string LastName { get; set; } = null!;
         [RegularExpression(@"^\d{8}$", ErrorMessage = "El DNI debe tener 8 dígitos numéricos.")]
         public string IdCard { get; set; } = null!;
+
+        public Image? Avatar { get; set; }
 
         #region Validations
         private class EmailValid() : ValidationAttribute
@@ -56,7 +58,7 @@ namespace Web_Service_.Net_Core.Models.Request
                 int newRole = (int)value;
                 var context = validationContext.GetService<DataContext>();
 
-                if (!context.Roles.Any(r => r.Id == newRole)) 
+                if (!context.Roles.Any(r => r.Id == newRole))
                 {
                     return new ValidationResult(ErrorMessage);
                 }

@@ -59,6 +59,28 @@ namespace Web_Service_.Net_Core.Controllers
             // Return the ApiResponse as Ok result
             return Ok(oApiResponse);
         }
+        [Authorize]
+        [HttpGet("current")]
+        public IActionResult GetCurrentUser([FromHeader(Name = "Authorization")]string token)
+        {
+           
+        
+            ApiResponse<User> oResponse = new ApiResponse<User>();
+            try
+            {
+                // Call the user service to retrieve users based on the provided query parameters
+                oResponse = _userService.GetCurrentUser(token);
+            }
+            catch (Exception ex)
+            {
+                // Handle any exceptions that occur during the user retrieval process
+                oResponse.Success = 0;
+                oResponse.Message = $"An error occurred while searching for users: {ex.Message}";
+                oResponse.Data = new List<User>();
+                oResponse.TotalCount = 0;
+            }
+            return Ok(oResponse);
+        }
 
         /// <summary>
         /// Retrieve a list of users based on the provided query parameters

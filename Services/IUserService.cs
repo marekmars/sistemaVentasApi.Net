@@ -21,6 +21,6 @@ namespace Web_Service_.Net_Core.Services
         public UserResponse Authenticate(AuthRequest oAuthRequest);
         public ApiResponse<User> MailExist(string correo);
         public ApiResponse<User> FullDeleteUser(long Id);
-
+        public ApiResponse<User> GetCurrentUser(string token);
     }
 }

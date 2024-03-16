@@ -24,12 +24,6 @@ namespace Web_Service_.Net_Core.Models.Request
         public string? Description { get; set; }
         public List<Image>? Images { get; set; }
     }
-    public class ImageRequest
-    {
-        public string DeleteHash {get;set;} ="";
-        public string? Name { get; set; }
-        public string? Url { get; set; }
-
-    }
+    
 
 }

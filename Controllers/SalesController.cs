@@ -136,7 +136,7 @@ namespace Web_Service_.Net_Core.Controllers
             catch (Exception ex)
             {
                 oApiResponse.Success = 0;
-                oApiResponse.Message = $"Ocurrio un error actualizando el cliente {ex.Message}";
+                oApiResponse.Message = $"Ocurrio un error actualizando la venta {ex.Message}";
                 oApiResponse.Data = [];
                 oApiResponse.TotalCount = 0;
             }

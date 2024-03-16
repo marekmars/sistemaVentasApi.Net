@@ -130,6 +130,8 @@ namespace Web_Service_.Net_Core.Services
             query = query
             .Include(p => p.Images)
             .Where(p => p.State == 1);
+
+
             if (!string.IsNullOrEmpty(queryParameters.Filter))
             {
                 string filter = queryParameters.Filter.ToLower();
@@ -163,19 +165,6 @@ namespace Web_Service_.Net_Core.Services
                     query = query.Reverse(); // This assumes Reverse is a valid extension method for IQueryable (you may need to implement it)
                 }
             }
-
-
-            // if (queryParameters.Max > 0)
-            // {
-            //     query = query.AsEnumerable().Where(p =>
-            //               p.UnitaryPrice <= queryParameters.Max).AsQueryable();
-
-            // }
-            // if (queryParameters.Min > 0)
-            // {
-            //     query = query.AsEnumerable().Where(p =>
-            //            queryParameters.Min <= p.UnitaryPrice).AsQueryable();
-            // }
 
 
             if (queryParameters.Skip.HasValue)
