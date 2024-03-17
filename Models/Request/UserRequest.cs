@@ -8,7 +8,7 @@ namespace Web_Service_.Net_Core.Models.Request
     public class UserRequest
     {
         [Key]
-        public long Id { get; set; }
+        public int Id { get; set; }
         [Required(ErrorMessage = "El rol es requerido")]
         [Range(1, int.MaxValue, ErrorMessage = "El rol tiene que ser mayor a 0")]
         [RoleValid(ErrorMessage = "El rol no existe")]

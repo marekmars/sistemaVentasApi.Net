@@ -36,7 +36,7 @@ namespace Web_Service_.Net_Core.Controllers
             catch (Exception ex)
             {
                 oResponse.Success = 0;
-                oResponse.Message = $"Ocurrio un error buscando el producto {ex.Message}";
+                oResponse.Message = $"Ocurrio un error buscando el producto {ex}";
                 oResponse.Data = [];
                 oResponse.TotalCount = 0;
 
@@ -55,7 +55,7 @@ namespace Web_Service_.Net_Core.Controllers
             catch (Exception ex)
             {
                 oResponse.Success = 0;
-                oResponse.Message = $"Ocurrio un error buscando el producto {ex.Message}";
+                oResponse.Message = $"Ocurrio un error buscando el producto {ex}";
                 oResponse.Data = [];
                 oResponse.TotalCount = 0;
             }
@@ -76,7 +76,7 @@ namespace Web_Service_.Net_Core.Controllers
             catch (Exception ex)
             {
                 oResponse.Success = 0;
-                oResponse.Message = $"Ocurrio un error agregando el producto {ex.Message}";
+                oResponse.Message = $"Ocurrio un error agregando el producto {ex}";
                 oResponse.Data = [];
                 oResponse.TotalCount = 0;
             }
@@ -99,7 +99,7 @@ namespace Web_Service_.Net_Core.Controllers
             catch (Exception ex)
             {
                 oResponse.Success = 0;
-                oResponse.Message = $"Ocurrio un error actualizando el producto {ex.Message}";
+                oResponse.Message = $"Ocurrio un error actualizando el producto {ex}";
                 oResponse.Data = [];
                 oResponse.TotalCount = 0;
             }
@@ -120,7 +120,7 @@ namespace Web_Service_.Net_Core.Controllers
             catch (Exception ex)
             {
                 oResponse.Success = 0;
-                oResponse.Message = $"Ocurrio un error buscando el producto {ex.Message}";
+                oResponse.Message = $"Ocurrio un error buscando el producto {ex}";
                 oResponse.Data = [];
                 oResponse.TotalCount = 0;
             }

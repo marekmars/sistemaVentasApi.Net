@@ -62,7 +62,8 @@ namespace Web_Service_.Net_Core.Services
         {
             if (usuario == null) throw new("User no encontrado");
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_configuration["Secret"]);
+            var key = Encoding.ASCII.GetBytes(_configuration["AppSettings:Secret"]);
+        
             string? rol = GetRole(usuario);
             var tokenDescriptor = new SecurityTokenDescriptor
             {

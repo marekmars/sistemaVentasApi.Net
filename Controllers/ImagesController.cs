@@ -20,7 +20,6 @@ namespace Web_Service_.Net_Core.Controllers
         {
             _imageService = imageService;
         }
-
         [HttpPost]
 
         public async Task<ActionResult<ApiResponse<QuickType.ImgResponse>>> AddImage([FromBody] ImageUploadModel imageUploadModel)

@@ -6,6 +6,7 @@ using Web_Service_.Net_Core.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Web_Service_.Net_Core.Models;
+using Web_Service_.Net_Core.Models.Common;
 
 
 
@@ -38,6 +39,41 @@ builder.Services.AddScoped<IClientService, ClientService>();
 builder.Services.AddScoped<IImageService, ImageService>();
 builder.Services.AddScoped<IRoleService, RoleService>();
 
+// builder.Services.AddAuthentication(options =>
+// {
+//     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme; // Esquema JWT como predeterminado
+//     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme; // Esquema JWT como predeterminado
+// }).AddJwtBearer(options => // web api valida con token
+// {
+//     options.RequireHttpsMetadata = false;
+//     options.SaveToken = true;
+//     options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+//     {
+//         ValidateIssuer = false,
+//         ValidateAudience = false,
+//         ValidateLifetime = true,
+//         ValidateIssuerSigningKey = true,
+//         IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(configuration["Secret"]))
+//     };
+//     options.Events = new JwtBearerEvents
+//     {
+//         OnMessageReceived = context =>
+//         {
+//             var accessToken = context.Request.Query["access_token"];
+//             var path = context.HttpContext.Request.Path;
+//             if (!string.IsNullOrEmpty(accessToken))
+//             {
+//                 context.Token = accessToken;
+//             }
+//             return Task.CompletedTask;
+//         }
+//     };
+// });
+var appSettingsSection = configuration.GetSection("AppSettings");
+builder.Services.Configure<AppSetting>(appSettingsSection);
+var appSettings = appSettingsSection.Get<AppSetting>();
+var key = Encoding.ASCII.GetBytes(appSettings.Secret);
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme; // Esquema JWT como predeterminado
@@ -52,7 +88,7 @@ builder.Services.AddAuthentication(options =>
         ValidateAudience = false,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(configuration["Secret"]))
+        IssuerSigningKey = new SymmetricSecurityKey(key)
     };
     options.Events = new JwtBearerEvents
     {
@@ -69,47 +105,42 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-
 //FIN
 
 
 
 builder.Services.AddAuthorizationBuilder()
-         .AddPolicy("Empleado", policy => policy.RequireRole("Empleado", "Administrador"))
-         .AddPolicy("Administrador", policy => policy.RequireRole("Administrador"));
+         .AddPolicy("Seller", policy => policy.RequireRole("Seller", "Admin"))
+         .AddPolicy("Admin", policy => policy.RequireRole("Admin"));
 
-if (builder.Environment.IsDevelopment())
-{
-    builder.Services.AddDbContext<DataContext>(
-        options => options.UseMySql(
-            configuration["MySqlConnection"],
-           ServerVersion.AutoDetect(configuration["MySqlConnection"])
-        )
-    );
-}
-else
-{
-    builder.Services.AddDbContext<DataContext>(
+
+builder.Services.AddDbContext<DataContext>(
     options => options.UseSqlServer(
-        configuration["SomeConnection"]
+        configuration["AppSettings:ConnectionStrings:Some"]
     )
 );
 
-}
 
-
-// builder.Services.AddDbContext<DBContext>(
-//     options => options.UseMySql(
-//         configuration["AppSettings:ConnectionStrings:MySql"],
-//         , Microsoft.EntityFrameworkCore.ServerVersion.Parse("10.4.32-mariadb")
-//     )
-// );
-
-// builder.Services.AddDbContext<DBContext>(
+// if (builder.Environment.IsDevelopment())
+// {
+//     builder.Services.AddDbContext<DataContext>(
+//         options => options.UseMySql(
+//             configuration["AppSettings:ConnectionStrings:MySql"],
+//            ServerVersion.AutoDetect(configuration["AppSettings:ConnectionStrings:MySql"])
+//         )
+//     );
+// }
+// else
+// {
+//     builder.Services.AddDbContext<DataContext>(
 //     options => options.UseSqlServer(
 //         configuration["AppSettings:ConnectionStrings:Some"]
 //     )
 // );
+
+// }
+
+
 
 var app = builder.Build();
 

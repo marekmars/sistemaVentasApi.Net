@@ -277,3 +277,8 @@ E:\Descargas\sistemaVentasApi.Net-main\obj\Debug\net8.0\Web Service .Net Core.pd
 E:\Descargas\sistemaVentasApi.Net-main\obj\Debug\net8.0\Web Service .Net Core.genruntimeconfig.cache
 E:\Descargas\sistemaVentasApi.Net-main\obj\Debug\net8.0\ref\Web Service .Net Core.dll
 E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\obj\Debug\net8.0\Web Service .Net Core.sourcelink.json
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\bin\Debug\net8.0\out\web.config
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\bin\Debug\net8.0\out\appsettings.Development.json
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\bin\Debug\net8.0\out\appsettings.json
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\bin\Debug\net8.0\out\Web Service .Net Core.deps.json
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\bin\Debug\net8.0\out\Web Service .Net Core.runtimeconfig.json

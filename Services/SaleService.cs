@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Web_Service_.Net_Core.Models;
@@ -22,6 +23,17 @@ namespace Web_Service_.Net_Core.Services
         }
         public ApiResponse<Sale> AddSale(SaleRequest oSaleRequest)
         {
+            Console.WriteLine("Añadiendo venta");
+            Console.WriteLine(oSaleRequest.IdClient);
+            Console.WriteLine(oSaleRequest.Concepts.Count);
+            Console.WriteLine(oSaleRequest.Date);
+            foreach (var item in oSaleRequest.Concepts)
+            {
+                Console.WriteLine(item.IdProduct);
+                Console.WriteLine(item.Quantity);
+                Console.WriteLine(item.UnitaryPrice);
+                Console.WriteLine(item.Import);
+            }
             Console.WriteLine("AFecha de venta: " + oSaleRequest.Date);
             using var dbTransaction = _context.Database.BeginTransaction();
 
@@ -165,6 +177,19 @@ namespace Web_Service_.Net_Core.Services
         }
         public ApiResponse<Sale> GetSales(QueryParameters queryParameters)
         {
+            Type type = queryParameters.GetType();
+
+            // Obtener todas las propiedades públicas de QueryParameters
+            PropertyInfo[] properties = type.GetProperties();
+
+            // Iterar sobre todas las propiedades e imprimir sus nombres y valores
+            foreach (var property in properties)
+            {
+                object value = property.GetValue(queryParameters);
+                Console.WriteLine($"{property.Name}: {value}");
+            }
+
+
             IQueryable<Sale> query = _context.Sales
                 .Include(v => v.Client)
                 .Include(v => v.Concepts)
@@ -178,10 +203,10 @@ namespace Web_Service_.Net_Core.Services
             if (!string.IsNullOrEmpty(queryParameters.Filter))
             {
                 string filter = queryParameters.Filter.ToLower();
-                DateTime.TryParse(queryParameters.Filter, out DateTime filterDate);
+                // DateTime.TryParse(queryParameters.Filter, out DateTime filterDate);
                 string[] filterWords = filter.Split(' ');
                 query = query.Where(v =>
-                       v.Date.Date == filterDate.Date ||
+                       //    v.Date.Date == filterDate.Date ||
                        v.Client.Name.ToLower().Contains(filter) ||
                        v.Client.LastName.ToLower().Contains(filter) ||
                        (v.Client.LastName.ToLower() + " " + v.Client.Name.ToLower()).Contains(filter) ||
@@ -194,6 +219,23 @@ namespace Web_Service_.Net_Core.Services
                    );
 
             }
+
+            if (queryParameters.StartDate.HasValue && queryParameters.EndDate.HasValue)
+            {
+                // Filtrar las ventas cuyas fechas estén dentro del rango especificado
+                query = query.Where(v => v.Date >= queryParameters.StartDate && v.Date <= queryParameters.EndDate);
+            }
+            else if (queryParameters.StartDate.HasValue)
+            {
+                // Filtrar las ventas cuyas fechas sean posteriores o iguales a la fecha de inicio
+                query = query.Where(v => v.Date >= queryParameters.StartDate);
+            }
+            else if (queryParameters.EndDate.HasValue)
+            {
+                // Filtrar las ventas cuyas fechas sean anteriores o iguales a la fecha de fin
+                query = query.Where(v => v.Date <= queryParameters.EndDate);
+            }
+
 
             var totalElements = query.Count();
 

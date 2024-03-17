@@ -6,7 +6,7 @@ namespace Web_Service_.Net_Core.Models;
 
 public partial class User
 {
-    public long Id { get; set; }
+    public int Id { get; set; }
 
     public int IdRole { get; set; }
 

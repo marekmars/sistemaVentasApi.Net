@@ -182,7 +182,7 @@ public partial class DataContext : DbContext
                 .HasColumnName("id_product")
                 .IsRequired(false); ;
             entity.Property(e => e.IdUser)
-                .HasColumnType("bigint(20)")
+                .HasColumnType("int(11)")
                 .HasColumnName("id_user")
                 .IsRequired(false); ;
 

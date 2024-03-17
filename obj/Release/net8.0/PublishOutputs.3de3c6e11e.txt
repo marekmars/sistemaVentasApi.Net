@@ -1,0 +1,52 @@
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\out\Web Service .Net Core.exe
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\out\appsettings.Development.json
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\out\appsettings.json
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\out\Web Service .Net Core.dll
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\out\Web Service .Net Core.runtimeconfig.json
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\out\Web Service .Net Core.pdb
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\out\Azure.Core.dll
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\out\Azure.Identity.dll
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\out\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\out\Microsoft.Bcl.AsyncInterfaces.dll
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\out\Microsoft.Data.SqlClient.dll
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\out\Microsoft.EntityFrameworkCore.dll
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\out\Microsoft.EntityFrameworkCore.Abstractions.dll
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\out\Microsoft.EntityFrameworkCore.Relational.dll
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\out\Microsoft.EntityFrameworkCore.SqlServer.dll
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\out\Microsoft.Identity.Client.dll
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\out\Microsoft.Identity.Client.Extensions.Msal.dll
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\out\Microsoft.IdentityModel.Abstractions.dll
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\out\Microsoft.IdentityModel.JsonWebTokens.dll
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\out\Microsoft.IdentityModel.Logging.dll
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\out\Microsoft.IdentityModel.Protocols.dll
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\out\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\out\Microsoft.IdentityModel.Tokens.dll
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\out\Microsoft.OpenApi.dll
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\out\Microsoft.SqlServer.Server.dll
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\out\Microsoft.Win32.SystemEvents.dll
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\out\MySqlConnector.dll
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\out\Pomelo.EntityFrameworkCore.MySql.dll
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\out\Swashbuckle.AspNetCore.Swagger.dll
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\out\Swashbuckle.AspNetCore.SwaggerGen.dll
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\out\Swashbuckle.AspNetCore.SwaggerUI.dll
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\out\System.Configuration.ConfigurationManager.dll
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\out\System.Drawing.Common.dll
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\out\System.IdentityModel.Tokens.Jwt.dll
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\out\System.Memory.Data.dll
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\out\System.Runtime.Caching.dll
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\out\System.Security.Cryptography.ProtectedData.dll
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\out\System.Security.Permissions.dll
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\out\System.Windows.Extensions.dll
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\out\runtimes\unix\lib\net6.0\Microsoft.Data.SqlClient.dll
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\out\runtimes\win\lib\net6.0\Microsoft.Data.SqlClient.dll
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\out\runtimes\win-arm\native\Microsoft.Data.SqlClient.SNI.dll
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\out\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.dll
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\out\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\out\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\out\runtimes\win\lib\net6.0\Microsoft.Win32.SystemEvents.dll
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\out\runtimes\unix\lib\net6.0\System.Drawing.Common.dll
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\out\runtimes\win\lib\net6.0\System.Drawing.Common.dll
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\out\runtimes\win\lib\net6.0\System.Runtime.Caching.dll
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\out\runtimes\win\lib\net6.0\System.Security.Cryptography.ProtectedData.dll
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\out\runtimes\win\lib\net6.0\System.Windows.Extensions.dll
+E:\Documentos\Proyectos\Sistema de Ventas .Net + Angular +\Web Service .Net Core\out\Web Service .Net Core.deps.json

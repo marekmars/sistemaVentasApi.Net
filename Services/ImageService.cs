@@ -20,16 +20,16 @@ public class ImageService : IImageService
     {
         try
         {
-            if (imageUploadModel.Image == null) throw new Exception("There was an error processing the image. Please try again later.");
+            if (imageUploadModel.Image == null) throw new Exception("There was an error processing the image. The image is null.");
 
             byte[] imageBytes = Convert.FromBase64String(imageUploadModel.Image);
 
-            string? uploadUrl = _config["ImgurServerUrl"];
+            string? uploadUrl = _config["AppSettings:Imgur:ImgurServerUrl"];
             // string? token = _config["ClientId"];
-            string? token = _config["ImgurToken"];
+            string? token = _config["AppSettings:Imgur:ImgurToken"];
             Console.WriteLine("Token: " + token);
             Console.WriteLine("Url: " + uploadUrl);
-            if (uploadUrl == null || token == null) throw new Exception("There was an error processing the image. Please try again later.");
+            if (uploadUrl == null || token == null) throw new Exception("There was an error processing the image. Problem with the configuration.");
 
             using (var client = new HttpClient())
             {
@@ -43,7 +43,7 @@ public class ImageService : IImageService
                     {
                         var jsonResponse = await response.Content.ReadAsStringAsync();
                         var responseObject = JsonSerializer.Deserialize<ImgResponse>(jsonResponse);
-                        if (responseObject == null) throw new Exception("There was an error processing the image. Please try again later.");
+                        if (responseObject == null) throw new Exception("There was an error processing the image. Response object is null.");
                         return new ApiResponse<ImgResponse>
                         {
                             Success = 1,
@@ -53,7 +53,7 @@ public class ImageService : IImageService
                     }
                     else
                     {
-                        throw new Exception("There was an error processing the image. Please try again later");
+                        throw new Exception("There was an error processing the image. Error code: " + response.StatusCode);
                     }
                 }
             }
@@ -72,8 +72,8 @@ public class ImageService : IImageService
 
 
 
-            string? uploadUrl = $"{_config["ImgurServerUrl"]}/{deleteHash}";
-            string? token = _config["imgurToken"];
+            string? uploadUrl = $"{_config["AppSettings:Imgur:ImgurServerUrl"]}/{deleteHash}";
+            string? token = _config["AppSettings:Imgur:ImgurToken"];
 
 
             if (uploadUrl == null || token == null) throw new Exception("There was an error deleting the image. Please try again later.");
@@ -104,7 +104,7 @@ public class ImageService : IImageService
         }
         catch (Exception ex)
         {
-            throw new Exception("There was an error dweleting the image. Please try again later. Error message: " + ex.Message);
+            throw new Exception("There was an error deleting the image. Please try again later. Error message: " + ex.Message);
         }
     }
     public async Task<ApiResponse<Object>> DeleteImageByUrl(string url)
@@ -116,8 +116,8 @@ public class ImageService : IImageService
             var img = _context.Images.SingleOrDefault(x => x.Url == url);
 
             if (img == null) throw new Exception("There was an error deleting the image. Please try again later.");
-            string? uploadUrl = $"{_config["ImgurServerUrl"]}/{img.DeleteHash}";
-            string? token = _config["imgurToken"];
+            string? uploadUrl = $"{_config["AppSettings:Imgur:ImgurServerUrl"]}/{img.DeleteHash}";
+            string? token = _config["AppSettings:Imgur:ImgurToken"];
 
             if (uploadUrl == null || token == null) throw new Exception("There was an error deleting the image. Please try again later.");
 

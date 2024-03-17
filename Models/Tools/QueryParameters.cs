@@ -12,7 +12,7 @@ namespace Web_Service_.Net_Core.Models.Tools
         public int? Skip { get; set; }
         public string? OrderBy { get; set; }
         public byte? Desc { get; set; }
-        public decimal? Max { get; set; }
-        public decimal? Min { get; set; }
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
     }
 }
