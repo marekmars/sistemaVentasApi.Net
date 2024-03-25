@@ -191,6 +191,25 @@ namespace Web_Service_.Net_Core.Controllers
             }
             return Ok(oApiResponse);
         }
+        [HttpPatch("/profile")]
+        public IActionResult UpdateProfile([FromHeader(Name = "Authorization")]string token,UserRequest oUserRequest)
+        {
+            ApiResponse<User> oApiResponse = new ApiResponse<User>();
+            try
+            {
+                // Update the user information
+                oApiResponse = _userService.UpdateProfile(token,oUserRequest);
+            }
+            catch (Exception ex)
+            {
+                // Handle error and set response properties
+                oApiResponse.Success = 0;
+                oApiResponse.Message = $"An error occurred while updating the user: {ex.Message}";
+                oApiResponse.Data = null;
+                oApiResponse.TotalCount = 0;
+            }
+            return Ok(oApiResponse);
+        }
 
         /// <summary>
         /// Adds a new user.

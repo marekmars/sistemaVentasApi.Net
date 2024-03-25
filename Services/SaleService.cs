@@ -178,7 +178,8 @@ namespace Web_Service_.Net_Core.Services
         public ApiResponse<Sale> GetSales(QueryParameters queryParameters)
         {
             Type type = queryParameters.GetType();
-
+            Console.WriteLine("Start Date: ", queryParameters.StartDate);
+            Console.WriteLine("End Date: ", queryParameters.EndDate);
             // Obtener todas las propiedades públicas de QueryParameters
             PropertyInfo[] properties = type.GetProperties();
 

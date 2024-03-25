@@ -17,6 +17,7 @@ namespace Web_Service_.Net_Core.Services
         public ApiResponse<User> GetUser(long id);
         public ApiResponse<User> AddUser(UserRequest oUserRequest);
         public ApiResponse<User> UpdateUser(UserRequest oUserRequest);
+        public ApiResponse<User> UpdateProfile(string token, UserRequest oUserRequest);
         public ApiResponse<User> DeleteUser(long Id);
         public UserResponse Authenticate(AuthRequest oAuthRequest);
         public ApiResponse<User> MailExist(string correo);

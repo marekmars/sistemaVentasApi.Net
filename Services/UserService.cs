@@ -63,7 +63,7 @@ namespace Web_Service_.Net_Core.Services
             if (usuario == null) throw new("User no encontrado");
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_configuration["AppSettings:Secret"]);
-        
+
             string? rol = GetRole(usuario);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
@@ -180,16 +180,34 @@ namespace Web_Service_.Net_Core.Services
 
         public ApiResponse<User> DeleteUser(long Id)
         {
-            User? oUser = _context.Users.Find(Id) ?? throw new Exception("No se encontro el usuario");
+            Console.WriteLine("Eliminando usuario: " + Id);
+
+            // Buscar el usuario en la base de datos
+            User oUser = _context.Users.Where(u => u.Id == Id).FirstOrDefault();
+            Console.WriteLine("Deleting user " + oUser.Name);
+            // Verificar si el usuario existe
+            if (oUser == null)
+            {
+                throw new Exception("No se encontró el usuario con el ID proporcionado.");
+            }
+
+            // Cambiar el estado del usuario
             oUser.State = 0;
-            _context.Entry(oUser).State = EntityState.Modified;
+
+            // Guardar los cambios en la base de datos
             _context.SaveChanges();
+
+            // Borrar la contraseña del usuario para no enviarla en la respuesta
             oUser.Password = "";
+
+            Console.WriteLine("El estado final es: " + oUser.State);
+
+            // Devolver una respuesta exitosa
             return new ApiResponse<User>
             {
                 Success = 1,
-                Message = "User eliminado correctamente",
-                Data = [oUser],
+                Message = "Usuario eliminado correctamente",
+                Data = new List<User> { oUser },
                 TotalCount = 1
             };
         }
@@ -352,6 +370,60 @@ namespace Web_Service_.Net_Core.Services
                 TotalCount = 1
             };
         }
+
+        public ApiResponse<User> UpdateProfile(string token, UserRequest oUserRequest)
+        {
+            Console.WriteLine("=====================================================");
+            Console.WriteLine("Editando usuario: " + oUserRequest.Avatar.Url);
+            Console.WriteLine("=====================================================");
+            User? oUser = this.GetCurrentUser(token).Data.FirstOrDefault();
+
+            oUser.Name = !string.IsNullOrEmpty(oUserRequest.Name) ? oUserRequest.Name : oUser.Name;
+            oUser.LastName = !string.IsNullOrEmpty(oUserRequest.LastName) ? oUserRequest.LastName : oUser.LastName;
+            oUser.IdCard = !string.IsNullOrEmpty(oUserRequest.IdCard) ? oUserRequest.IdCard : oUser.IdCard;
+            oUser.Mail = !string.IsNullOrEmpty(oUserRequest.Mail) ? oUserRequest.Mail : oUser.Mail;
+            oUser.State = 1;
+            oUser.Password = oUser.Password;
+
+            if (oUserRequest.Password != null
+            && oUserRequest.Password.Trim() != ""
+            && Encrypt.GetSHA256(oUserRequest.Password) != oUser.Password)
+            {
+                oUser.Password = Encrypt.GetSHA256(oUserRequest.Password);
+            }
+
+            _context.Entry(oUser).State = EntityState.Modified;
+            _context.SaveChanges();
+
+
+            if (oUserRequest.Avatar != null)
+            {
+                var imageEntity = new Image
+                {
+                    DeleteHash = oUserRequest.Avatar.DeleteHash,
+                    Name = oUserRequest.Avatar.Name,
+                    Url = oUserRequest.Avatar.Url,
+                    IdUser = oUser.Id  // Set the foreign key to the Id of the newly created User
+                };
+
+                // Add the Image entity to the context
+                _context.Images.RemoveRange(_context.Images.Where(i => i.IdUser == oUser.Id));
+                _context.Images.Add(imageEntity);
+
+                _context.SaveChanges();
+            }
+
+            oUser.Password = "";
+            return new ApiResponse<User>
+            {
+                Success = 1,
+                Message = "User actualizado correctamente",
+                Data = [oUser],
+                TotalCount = 1
+            };
+
+        }
+
     }
 }
 

@@ -114,31 +114,31 @@ builder.Services.AddAuthorizationBuilder()
          .AddPolicy("Admin", policy => policy.RequireRole("Admin"));
 
 
-builder.Services.AddDbContext<DataContext>(
-    options => options.UseSqlServer(
-        configuration["AppSettings:ConnectionStrings:Some"]
-    )
-);
-
-
-// if (builder.Environment.IsDevelopment())
-// {
-//     builder.Services.AddDbContext<DataContext>(
-//         options => options.UseMySql(
-//             configuration["AppSettings:ConnectionStrings:MySql"],
-//            ServerVersion.AutoDetect(configuration["AppSettings:ConnectionStrings:MySql"])
-//         )
-//     );
-// }
-// else
-// {
-//     builder.Services.AddDbContext<DataContext>(
+// builder.Services.AddDbContext<DataContext>(
 //     options => options.UseSqlServer(
 //         configuration["AppSettings:ConnectionStrings:Some"]
 //     )
 // );
 
-// }
+
+if (builder.Environment.IsDevelopment())
+{
+    builder.Services.AddDbContext<DataContext>(
+        options => options.UseMySql(
+            configuration["AppSettings:ConnectionStrings:MySql"],
+           ServerVersion.AutoDetect(configuration["AppSettings:ConnectionStrings:MySql"])
+        )
+    );
+}
+else
+{
+    builder.Services.AddDbContext<DataContext>(
+    options => options.UseSqlServer(
+        configuration["AppSettings:ConnectionStrings:Some"]
+    )
+);
+
+}
 
 
 

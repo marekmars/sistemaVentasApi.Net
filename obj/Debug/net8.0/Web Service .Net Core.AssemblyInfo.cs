@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Web Service .Net Core")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c4e39c7dbc4cf14c681d652d7ace183f480cfcde")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5adf5279ff33ea59143ea46f076344c8172c83ad")]
 [assembly: System.Reflection.AssemblyProductAttribute("Web Service .Net Core")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Web Service .Net Core")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
